@@ -12,37 +12,6 @@ afterAll(()=>{
     return db.end();
 })
 
-describe('Name of the group', () => {
-    
-});
-
-/** CORE: GET /api/topics
-Description
-
-Should:
-be available on endpoint /api/topics.
-get all topics.
-
-Responds with:
-an array of topic objects, each of which should have the following properties:
-slug
-description
-
-Consider what errors could occur with this endpoint. As this is your first endpoint you may wish to also consider any general errors that could occur when making any type of request to your api. The errors that you identify should be fully tested for.
-
-Potenital errors (Not relevanty yet!):
-- Given a query when not specified any yet
-- Primary key is not unique
-- Wrong data type
-
-General errors:
-- Making a request that doesn't exist yet e.g DELETE or Making a request to an endpoint that doesn't exist e.g. /api/nothing, returns a 404 
-
-Note: although you may consider handling a 500 error in your app, we would not expect you to explicitly test for this.
-*/
-
-//Happy path testing
-
 describe('GET /api/topics', () => {
     test('should respond with an array of topic objects, each should have the following properties: slug, description', () => {
         return request(app)
@@ -53,8 +22,6 @@ describe('GET /api/topics', () => {
         const topicsArray = res.body;
         
         // console.log(topicsArray, "topic");
-
-        expect(topicsArray).toBeInstanceOf(Array);
 
         expect(topicsArray).toHaveLength(3);
 
@@ -76,10 +43,17 @@ describe("Making a request that doesn't exist yet", () => {
         return request(app)
           .get('/api/non-existant-path')
           .expect(404)
+          .then((response) => {
+            expect(response.body.msg).toBe('Path not found');
+          });
     });
     test('When given a non-existant request sends an appropriate status and error message 2', () => {
         return request(app)
           .delete('/api/topics')
           .expect(404)
+          .then((response) => {
+            console.log(response, 'response')
+            expect(response.body.msg).toBe('Path not found');
+          });
     });
 });
