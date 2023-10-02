@@ -5,6 +5,11 @@ const {getTopics} = require("./Controllers/controller");
 
 app.get("/api/topics", getTopics);
 
+//Path not found error
+app.use((req, res) => {
+    res.status(404).send({ msg: 'Path not found' })
+});
+
 //Error handling middleware functions 
 // app.use((err, req, res, next) => {
 //     // console.log("user error");
@@ -22,17 +27,11 @@ app.get("/api/topics", getTopics);
 //     } else next(err);
 // });
 
-
-
-//Internal system error
+//Internal system error if no catches are made
 app.use((err, req, res, next) => {
     // console.log(err);
     res.status(500).send({ msg: 'Internal Server Error' });
 });
 
-//Path not found error
-app.use((req, res) => {
-    res.status(404).send({ msg: 'Path not found' })
-});
 
 module.exports = app;
