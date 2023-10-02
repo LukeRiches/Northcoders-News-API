@@ -3,5 +3,5 @@ exports.commentData = require('./comments.js');
 exports.topicData = require('./topics.js');
 exports.userData = require('./users.js');
 
-module.exports = {articleData, commentData, topicData, userData};
+// module.exports = {articleData, commentData, topicData, userData};
 
