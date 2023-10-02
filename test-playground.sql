@@ -1,9 +1,12 @@
 \c nc_news_test
+-- topics
+SELECT * FROM topics;
 
-SELECT * FROM comments;
-
-SELECT * FROM articles;
-
+--users
 SELECT * FROM users;
 
-SELECT * FROM topics;
+--articles
+SELECT * FROM articles;
+
+--comments
+SELECT * FROM comments;
