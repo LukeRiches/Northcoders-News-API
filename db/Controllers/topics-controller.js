@@ -1,8 +1,6 @@
 const {fetchTopics} = require("../Models");
 
 function getTopics(req, res, next){
-    // console.log("in getTopics");
-    // const {} = req.query;
 
     fetchTopics()
     .then((topics)=>{
