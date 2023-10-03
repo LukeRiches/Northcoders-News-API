@@ -8,5 +8,8 @@ SELECT * FROM users;
 --articles
 SELECT * FROM articles;
 
+--article by id
+SELECT * FROM articles WHERE article_id = 1;
+
 --comments
 SELECT * FROM comments;

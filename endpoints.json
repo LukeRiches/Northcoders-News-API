@@ -9,5 +9,24 @@
     "exampleResponse": {
       "topics": [{ "slug": "football", "description": "Footie!" }]
     }
+  },
+  "GET /api/articles/:article_id": {
+    "description": "serves an article object, which should have the following properties:",
+    "queries": [],
+    "exampleResponse": {
+      "article": [
+        {
+          "author" : "author_name",
+          "title" : "article_title",
+          "article_id" : 1,
+          "body" : "Text from the article..",
+          "topic" : "topic_name",
+          "created_at" : "2020-07-09 21:11:00",
+          "votes" : 0,
+          "article_img_url" : "article_img_url"
+        }
+      ]
+    }
   }
 }
+
