@@ -3,6 +3,7 @@ const data = require("../db/data/test-data");
 const db = require("../db/connection");
 const request = require("supertest");
 const app = require("../db/app");
+const exampleApi = require("../endpoints.json");
 
 beforeEach(()=>{
     return seed(data);
@@ -21,8 +22,6 @@ describe('GET /api/topics', () => {
 
         const topicsArray = res.body;
         
-        // console.log(topicsArray, "topic");
-
         expect(topicsArray).toHaveLength(3);
 
         topicsArray.forEach((topic) => {
@@ -34,6 +33,21 @@ describe('GET /api/topics', () => {
         })
       })
     })
+});
+
+describe('GET /api', () => {
+    test('The api should match endpoints.json', () => {
+        return request(app)
+        .get("/api")
+        .expect(200)
+        .then((res) => {
+
+            const userApi = res.body.endpoints;
+        
+            expect(userApi).toEqual(exampleApi);
+        });
+    })
+    
 });
 
 //General Errors
@@ -52,7 +66,7 @@ describe("Making a request that doesn't exist yet", () => {
           .delete('/api/topics')
           .expect(404)
           .then((response) => {
-            console.log(response, 'response')
+            // console.log(response, 'response')
             expect(response.body.msg).toBe('Path not found');
           });
     });
