@@ -22,8 +22,6 @@ describe('GET /api/topics', () => {
 
         const topicsArray = res.body;
         
-        // console.log(topicsArray, "topic");
-
         expect(topicsArray).toHaveLength(3);
 
         topicsArray.forEach((topic) => {
@@ -44,8 +42,7 @@ describe('GET /api', () => {
         .expect(200)
         .then((res) => {
 
-            const userApi = res.body;
-            // console.log(userApiObj, "user api");
+            const userApi = res.body.endpoints;
         
             expect(userApi).toEqual(exampleApi);
         });
