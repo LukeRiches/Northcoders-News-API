@@ -4,6 +4,7 @@ const app = express();
 const {getTopics, getApi} = require("./Controllers");
 
 //Happy paths
+
 app.get("/api/topics", getTopics);
 
 app.get("/api", getApi);

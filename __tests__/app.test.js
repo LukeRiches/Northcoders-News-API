@@ -41,14 +41,85 @@ describe('GET /api', () => {
         .get("/api")
         .expect(200)
         .then((res) => {
-
             const userApi = res.body.endpoints;
-        
+
             expect(userApi).toEqual(exampleApi);
         });
     })
     
 });
+
+/** CORE: GET /api/articles
+Description
+Should:
+be available on /api/articles.
+get all articles.
+
+Responds with:
+an articles array of article objects, each of which should have the following properties:
+author
+title
+article_id
+topic
+created_at
+votes
+article_img_url
+comment_count, which is the total count of all the comments with this article_id. You should make use of queries to the database in order to achieve this.
+
+In addition:
+the articles should be sorted by date in descending order.
+there should not be a body property present on any of the article objects.
+Consider what errors could occur with this endpoint, and make sure to test for them.
+
+Remember to add a description of this endpoint to your /api endpoint.
+*/
+
+describe.skip('GET /api/articles', () => {
+    test('should respond with an articles array of article objects ', () => {
+        return request(app)
+        .get("/api/articles")
+        .expect(200)
+        .then((res) => {
+            const articles = res.body.articles;
+            expect(Array.isArray(articles)).toBe(true);
+            expect(articles).toHaveLength(13);
+
+            articles.forEach((article) => {
+                expect(article).toHaveProperty("author");
+                expect(article).toHaveProperty("title");
+                expect(article).toHaveProperty("article_id");
+                expect(article).toHaveProperty("topic");
+                expect(article).toHaveProperty("created_at");
+                expect(article).toHaveProperty("votes");
+                expect(article).toHaveProperty("article_img_url");
+                expect(article).toHaveProperty("comment_count");
+            })
+        });
+    });
+    test('should be sorted by date in descending order', () => {
+        return request(app)
+        .get("/api/articles")
+        .expect(200)
+        .then((res) => {
+            const articles = res.body.articles;
+            expect(articles).toBeSortedBy('created_at', {
+                descending: true,
+            });
+        });
+    });
+    test('should not be a body property present on any of the article objects.', () => {
+        return request(app)
+        .get("/api/articles")
+        .expect(200)
+        .then((res) => {
+            const articles = res.body.articles;
+            articles.forEach((article) => {
+                expect(article).not.toHaveProperty("body");
+            })
+        })
+    });
+});
+
 
 //General Errors
 
