@@ -28,7 +28,6 @@ function fetchArticles(){
 
     return db.query(query).then(({rows}) => {
         const articles = rows
-        console.log(rows, "rows")
         return {articles};
     })
 }
