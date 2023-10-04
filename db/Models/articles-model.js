@@ -15,5 +15,20 @@ function fetchArticleByID(article_id){
     })
 }
 
+function fetchCommentsByID(article_id){
+    let query = "SELECT * FROM comments WHERE article_id = $1 ORDER BY created_at;"
 
-module.exports = {fetchArticleByID};
+    return db.query(query, [article_id]).then(({rows}) => {
+        if (rows[0] === undefined) {
+            return Promise.reject({
+                status: 404, 
+                msg : "Article has no comments"
+            })
+        } else {
+            return rows;
+        }
+    })
+}
+
+
+module.exports = {fetchArticleByID, fetchCommentsByID};

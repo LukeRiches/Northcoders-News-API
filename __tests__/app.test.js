@@ -87,6 +87,55 @@ describe('GET /api/articles/:article_id', () => {
     
 });
 
+describe('GET /api/articles/:article_id/comments', () => {
+  test('Should respond with an array of comments for the given article_id of which each comment should have the following properties: comment_id, votes, created_at, author, body, article_id', () => {
+    return request(app)
+      .get('/api/articles/1/comments')
+      .expect(200)
+      .then((response) => {
+        const comments = response.body;
+        console.log(comments, "comments");
+        expect(Array.isArray(comments)).toBe(true)
+
+        comments.forEach((comment) => {
+           expect(comment).toHaveProperty("comment_id")
+            expect(comment).toHaveProperty("votes")
+            expect(comment).toHaveProperty("created_at")
+            expect(comment).toHaveProperty("author")
+            expect(comment).toHaveProperty("body")
+            expect(comment).toHaveProperty("article_id")
+
+          });
+      });
+  });
+  test('Should be served with the most recent comments first', () => {
+    return request(app)
+      .get('/api/articles/1/comments')
+      .expect(200)
+      .then((response) => {
+        const comments = response.body;
+
+        expect(comments).toBeSortedBy('created_at');
+      });
+  });
+  test('Sends an appropriate status and error message when given a valid id but has no values', () => {
+    return request(app)
+      .get('/api/articles/2/comments')
+      .expect(404)
+      .then((response) => {
+        expect(response.body.msg).toBe('Article has no comments');
+      });
+  });
+  test('Sends an appropriate status and error message when given an invalid id', () => {
+    return request(app)
+      .get('/api/articles/999/comments')
+      .expect(404)
+      .then((response) => {
+        expect(response.body.msg).toBe('Article does not exist');
+      });
+  });
+});
+
 //General Errors
 
 describe("Making a request that doesn't exist yet", () => {
