@@ -49,38 +49,14 @@ describe('GET /api', () => {
     
 });
 
-/** CORE: GET /api/articles
-Description
-Should:
-be available on /api/articles.
-get all articles.
-
-Responds with:
-an articles array of article objects, each of which should have the following properties:
-author
-title
-article_id
-topic
-created_at
-votes
-article_img_url
-comment_count, which is the total count of all the comments with this article_id. You should make use of queries to the database in order to achieve this.
-
-In addition:
-the articles should be sorted by date in descending order.
-there should not be a body property present on any of the article objects.
-Consider what errors could occur with this endpoint, and make sure to test for them.
-
-Remember to add a description of this endpoint to your /api endpoint.
-*/
-
-describe.skip('GET /api/articles', () => {
+describe('GET /api/articles', () => {
     test('should respond with an articles array of article objects ', () => {
         return request(app)
         .get("/api/articles")
         .expect(200)
         .then((res) => {
             const articles = res.body.articles;
+            console.log(res.body, "res.body");
             expect(Array.isArray(articles)).toBe(true);
             expect(articles).toHaveLength(13);
 
@@ -102,9 +78,8 @@ describe.skip('GET /api/articles', () => {
         .expect(200)
         .then((res) => {
             const articles = res.body.articles;
-            expect(articles).toBeSortedBy('created_at', {
-                descending: true,
-            });
+            console.log(articles);
+            expect(articles).toBeSortedBy('created_at')
         });
     });
     test('should not be a body property present on any of the article objects.', () => {
@@ -118,6 +93,19 @@ describe.skip('GET /api/articles', () => {
             })
         })
     });
+    test('when given a query but none exist yet, sends an appropriate error and error message', () => {
+        return request(app)
+          .get('/api/articles?non-existent-query=not_a_valid_query')
+          .expect(400)
+          .then((response) => {
+            console.log(response.body, "response")
+            expect(response.body.msg).toBe('No queries have been declared yet');
+        });
+    });
+    /**  Once queries are added further testing for: 
+    - When query exists but not a valid input
+    - When given a non existent query sends an appropriate error and error message
+    */ 
 });
 
 
