@@ -76,8 +76,10 @@ describe('GET /api/articles', () => {
         .get("/api/articles")
         .expect(200)
         .then((res) => {
+          // console.log(res.body, "res.body")
             const articles = res.body.articles;
-            expect(articles).toBeSortedBy('created_at')
+            console.log(articles, "articles");
+            expect(articles).toBeSortedBy('created_at', {descending: true})
         });
     });
     test('should not be a body property present on any of the article objects.', () => {
