@@ -225,39 +225,54 @@ Consider what errors could occur with this endpoint, and make sure to test for t
 Remember to add a description of this endpoint to your /api endpoint. 
 */
 
-describe.skip('POST /api/articles/:article_id/comments', () => {
+describe.only('POST /api/articles/:article_id/comments', () => {
   test('A succesful comment should respond with an appropriate status and the posted comment with correct comment properties', () => {
     const newComment = {
       username : 'lurker',
       body : "body..."
     };
     return request(app)
-      .post('/api/articles/:article_id/comments')
+      .post('/api/articles/1/comments')
       .send(newComment)
       .expect(201)
       .then((response) => {
-        const comment = response.body;
-
+        // console.log(response, "response")
+        const comment = response.body.comment;
+        console.log(comment)
+        
         expect(comment).toHaveProperty("comment_id")
-        expect(typeof comment.comment_id).tobe("number")
+        expect(typeof comment.comment_id).toBe("number")
 
         expect(comment).toHaveProperty("body")
-        expect(typeof comment.body).tobe("string")
+        expect(typeof comment.body).toBe("string")
 
         expect(comment).toHaveProperty("article_id")
-        expect(typeof comment.article_id).tobe("number")
+        expect(typeof comment.article_id).toBe("number")
 
         expect(comment).toHaveProperty("author")
-        expect(typeof comment.author).tobe("string")
+        expect(typeof comment.author).toBe("string")
 
         expect(comment).toHaveProperty("votes")
-        expect(typeof comment.votes).tobe("number")
+        expect(typeof comment.votes).toBe("number")
 
         expect(comment).toHaveProperty("created_at")
-        expect(typeof comment.created_at).tobe("string")
+        expect(typeof comment.created_at).toBe("string")
       });
   });
-  test('Responds with an appropriate status and error message when provided with a bad comment (Wrong Properties)', () => {
+  test('Sends an appropriate status and error message when given an invalid article id', () => {
+    const badComment = {
+      username : "lurker",
+      body : "body..."
+    };
+    return request(app)
+      .post('/api/articles/999/comments')
+      .send(badComment)
+      .expect(404)
+      .then((response) => {
+        expect(response.body.msg).toBe('Article does not exist');
+      });
+  });
+  test.skip('Responds with an appropriate status and error message when provided with a bad comment (Wrong Properties)', () => {
     const badComment = {
       user : "Test"
     };
@@ -269,7 +284,7 @@ describe.skip('POST /api/articles/:article_id/comments', () => {
         expect(response.body.msg).toBe('Bad Request');
       });
   });
-  test('Responds with an appropriate status and error message when provided with a bad comment (Wrong property type)', () => {
+  test.skip('Responds with an appropriate status and error message when provided with a bad comment (Wrong property type)', () => {
     const badComment = {
       username : 123,
       body : 456
@@ -282,7 +297,7 @@ describe.skip('POST /api/articles/:article_id/comments', () => {
         expect(response.body.msg).toBe('Bad Request');
       });
   });
-  test("Responds with an appropriate status and error message when provided with a bad comment (Doesn't include all the required properties)", () => {
+  test.skip("Responds with an appropriate status and error message when provided with a bad comment (Doesn't include all the required properties)", () => {
     const badComment = {
       username : "Test"
     };
@@ -294,7 +309,7 @@ describe.skip('POST /api/articles/:article_id/comments', () => {
         expect(response.body.msg).toBe('Bad Request');
       });
   });
-  test("Responds with an appropriate status and error message when provided with a bad comment (username doesn't match an existing username from the users table)", () => {
+  test.skip("Responds with an appropriate status and error message when provided with a bad comment (username doesn't match an existing username from the users table)", () => {
     const badComment = {
       username : "Test",
       body : "body..."
@@ -307,7 +322,7 @@ describe.skip('POST /api/articles/:article_id/comments', () => {
         expect(response.body.msg).toBe('Bad Request');
       });
   });
-  test("Responds with an appropriate status and error message when provided with a bad comment (username and body are blank)", () => {
+  test.skip("Responds with an appropriate status and error message when provided with a bad comment (username and body are blank)", () => {
     const badComment = {
       username : "",
       body : ""
@@ -318,19 +333,6 @@ describe.skip('POST /api/articles/:article_id/comments', () => {
       .expect(400)
       .then((response) => {
         expect(response.body.msg).toBe('Bad Request');
-      });
-  });
-  test('Sends an appropriate status and error message when given an invalid article id', () => {
-    const badComment = {
-      username : "Test",
-      body : "body..."
-    };
-    return request(app)
-      .post('/api/articles/999/comments')
-      .send(badComment)
-      .expect(404)
-      .then((response) => {
-        expect(response.body.msg).toBe('Article does not exist');
       });
   });
 });

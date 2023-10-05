@@ -3,6 +3,8 @@ const app = express();
 
 const {getTopics, getApi, getArticleByID, getArticles, getCommentsByID, postComment} = require("./Controllers");
 
+app.use(express.json());
+
 //Happy paths
 
 app.get("/api/topics", getTopics);
@@ -15,7 +17,7 @@ app.get("/api/articles/:article_id", getArticleByID)
 
 app.get('/api/articles/:article_id/comments', getCommentsByID);
 
-// app.post("/api/articles/:article_id/comments", postComment)
+app.post("/api/articles/:article_id/comments", postComment)
 
 //Path not found error
 app.use((req, res) => {
