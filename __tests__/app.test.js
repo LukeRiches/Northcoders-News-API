@@ -56,7 +56,6 @@ describe('GET /api/articles', () => {
         .expect(200)
         .then((res) => {
             const articles = res.body.articles;
-            console.log(res.body, "res.body");
             expect(Array.isArray(articles)).toBe(true);
             expect(articles).toHaveLength(13);
 
@@ -78,7 +77,6 @@ describe('GET /api/articles', () => {
         .expect(200)
         .then((res) => {
             const articles = res.body.articles;
-            console.log(articles);
             expect(articles).toBeSortedBy('created_at')
         });
     });
@@ -98,7 +96,6 @@ describe('GET /api/articles', () => {
           .get('/api/articles?non-existent-query=not_a_valid_query')
           .expect(400)
           .then((response) => {
-            console.log(response.body, "response")
             expect(response.body.msg).toBe('No queries have been declared yet');
         });
     });
