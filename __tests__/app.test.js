@@ -228,7 +228,7 @@ Remember to add a description of this endpoint to your /api endpoint.
 describe.skip('POST /api/articles/:article_id/comments', () => {
   test('A succesful comment should respond with an appropriate status and the posted comment with correct comment properties', () => {
     const newComment = {
-      username : 'Test_101',
+      username : 'lurker',
       body : "body..."
     };
     return request(app)
@@ -239,11 +239,22 @@ describe.skip('POST /api/articles/:article_id/comments', () => {
         const comment = response.body;
 
         expect(comment).toHaveProperty("comment_id")
+        expect(typeof comment.comment_id).tobe("number")
+
         expect(comment).toHaveProperty("body")
+        expect(typeof comment.body).tobe("string")
+
         expect(comment).toHaveProperty("article_id")
+        expect(typeof comment.article_id).tobe("number")
+
         expect(comment).toHaveProperty("author")
+        expect(typeof comment.author).tobe("string")
+
         expect(comment).toHaveProperty("votes")
+        expect(typeof comment.votes).tobe("number")
+
         expect(comment).toHaveProperty("created_at")
+        expect(typeof comment.created_at).tobe("string")
       });
   });
   test('Responds with an appropriate status and error message when provided with a bad comment (Wrong Properties)', () => {

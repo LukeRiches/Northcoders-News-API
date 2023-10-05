@@ -1,7 +1,7 @@
 const express = require("express");
 const app = express();
 
-const {getTopics, getApi, getArticleByID, getArticles, getCommentsByID} = require("./Controllers");
+const {getTopics, getApi, getArticleByID, getArticles, getCommentsByID, postComment} = require("./Controllers");
 
 //Happy paths
 
@@ -14,6 +14,8 @@ app.get("/api/articles", getArticles)
 app.get("/api/articles/:article_id", getArticleByID)
 
 app.get('/api/articles/:article_id/comments', getCommentsByID);
+
+// app.post("/api/articles/:article_id/comments", postComment)
 
 //Path not found error
 app.use((req, res) => {
