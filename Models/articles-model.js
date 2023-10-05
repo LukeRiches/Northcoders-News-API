@@ -1,4 +1,4 @@
-const db = require("../connection");
+const db = require("../db/connection");
 
 function fetchArticleByID(article_id){
     let query = "SELECT * FROM articles WHERE article_id = $1;"
