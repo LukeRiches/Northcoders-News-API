@@ -13,7 +13,7 @@ app.get("/api/articles", getArticles)
 
 app.get("/api/articles/:article_id", getArticleByID)
 
-// app.get('/api/articles/:article_id/comments', getCommentsByID);
+app.get('/api/articles/:article_id/comments', getCommentsByID);
 
 //Path not found error
 app.use((req, res) => {

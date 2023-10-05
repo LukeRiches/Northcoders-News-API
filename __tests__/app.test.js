@@ -145,7 +145,7 @@ describe('GET /api/articles/:article_id', () => {
     
 });
 
-describe.skip('GET /api/articles/:article_id/comments', () => {
+describe('GET /api/articles/:article_id/comments', () => {
   test('Should respond with an array of comments for the given article_id of which each comment should have the following properties: comment_id, votes, created_at, author, body, article_id', () => {
     return request(app)
       .get('/api/articles/1/comments')
