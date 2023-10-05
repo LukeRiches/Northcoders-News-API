@@ -16,4 +16,17 @@ function getUsers(req, res, next){
     });
 }
 
-module.exports = {getUsers};
+function getUser(req, res, next){
+    // console.log("in controller");
+    const { username } = req.params;
+
+    fetchUser(username)
+    .then((article)=>{
+        res.status(200).send(article)
+    })
+    .catch((err)=>{
+        next(err);
+    });
+}
+
+module.exports = {getUsers, getUser};

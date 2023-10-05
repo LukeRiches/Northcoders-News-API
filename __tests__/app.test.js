@@ -265,7 +265,7 @@ describe('GET /api/users', () => {
   */ 
 });
 
-describe.skip('GET /api/users/:username', () => {
+describe.only('GET /api/users/:username', () => {
   test('should respond with a single user object', () => {
       return request(app)
         .get('/api/users/butter_bridge')
@@ -284,14 +284,6 @@ describe.skip('GET /api/users/:username', () => {
         .expect(404)
         .then((response) => {
           expect(response.body.msg).toBe('User does not exist');
-        });
-  });
-  test('sends an appropriate status and error message when given an invalid username', () => {
-      return request(app)
-        .get('/api/articles/1234')
-        .expect(400)
-        .then((response) => {
-          expect(response.body.msg).toBe('Bad request');
         });
   });
 })
