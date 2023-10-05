@@ -126,7 +126,7 @@ describe('GET /api/articles/:article_id/comments', () => {
         expect(response.body.msg).toBe('Article has no comments');
       });
   });
-  test('Sends an appropriate status and error message when given an invalid id', () => {
+  test('Sends an appropriate status and error message when given an invalid article id', () => {
     return request(app)
       .get('/api/articles/999/comments')
       .expect(404)
@@ -135,6 +135,131 @@ describe('GET /api/articles/:article_id/comments', () => {
       });
   });
 });
+
+/** CORE: POST /api/articles/:article_id/comments
+Description
+Should:
+be available on /api/articles/:article_id/comments.
+add a comment for an article.
+
+Request body accepts:
+an object with the following properties:
+username
+body
+
+Responds with:
+the posted comment.
+
+Consider what errors could occur with this endpoint, and make sure to test for them.
+
+Remember to add a description of this endpoint to your /api endpoint. 
+*/
+
+describe.skip('POST /api/articles/:article_id/comments', () => {
+  test('A succesful comment should respond with an appropriate status and the posted comment with correct comment properties', () => {
+    const newComment = {
+      username : 'Test_101',
+      body : "body..."
+    };
+    return request(app)
+      .post('/api/articles/:article_id/comments')
+      .send(newComment)
+      .expect(201)
+      .then((response) => {
+        const comment = response.body;
+
+        expect(comment).toHaveProperty("comment_id")
+        expect(comment).toHaveProperty("body")
+        expect(comment).toHaveProperty("article_id")
+        expect(comment).toHaveProperty("author")
+        expect(comment).toHaveProperty("votes")
+        expect(comment).toHaveProperty("created_at")
+      });
+  });
+  test('Responds with an appropriate status and error message when provided with a bad comment (Wrong Properties)', () => {
+    const badComment = {
+      user : "Test"
+    };
+    return request(app)
+      .post('/api/articles/1/comments')
+      .send(badComment)
+      .expect(400)
+      .then((response) => {
+        expect(response.body.msg).toBe('Bad Request');
+      });
+  });
+  test('Responds with an appropriate status and error message when provided with a bad comment (Wrong property type)', () => {
+    const badComment = {
+      username : 123,
+      body : 456
+    };
+    return request(app)
+      .post('/api/articles/1/comments')
+      .send(badComment)
+      .expect(400)
+      .then((response) => {
+        expect(response.body.msg).toBe('Bad Request');
+      });
+  });
+  test("Responds with an appropriate status and error message when provided with a bad comment (Doesn't include all the required properties)", () => {
+    const badComment = {
+      username : "Test"
+    };
+    return request(app)
+      .post('/api/articles/1/comments')
+      .send(badComment)
+      .expect(400)
+      .then((response) => {
+        expect(response.body.msg).toBe('Bad Request');
+      });
+  });
+  test("Responds with an appropriate status and error message when provided with a bad comment (username doesn't match an existing username from the users table)", () => {
+    const badComment = {
+      username : "Test",
+      body : "body..."
+    };
+    return request(app)
+      .post('/api/articles/1/comments')
+      .send(badComment)
+      .expect(400)
+      .then((response) => {
+        expect(response.body.msg).toBe('Bad Request');
+      });
+  });
+  test("Responds with an appropriate status and error message when provided with a bad comment (username and body are blank)", () => {
+    const badComment = {
+      username : "",
+      body : ""
+    };
+    return request(app)
+      .post('/api/articles/1/comments')
+      .send(badComment)
+      .expect(400)
+      .then((response) => {
+        expect(response.body.msg).toBe('Bad Request');
+      });
+  });
+  test('Sends an appropriate status and error message when given an invalid article id', () => {
+    const badComment = {
+      username : "Test",
+      body : "body..."
+    };
+    return request(app)
+      .post('/api/articles/999/comments')
+      .send(badComment)
+      .expect(404)
+      .then((response) => {
+        expect(response.body.msg).toBe('Article does not exist');
+      });
+  });
+});
+
+/** When inserting to comments:
+ - comment_id is serialised (don't need)
+ - votes and created at default (don't need)
+ - needs body and username (given in req.body) 
+ - needs article_id (given in req.params)
+*/
 
 //General Errors
 
