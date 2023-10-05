@@ -14,9 +14,9 @@ SELECT * FROM articles WHERE article_id = 1;
 --comments
 SELECT * FROM comments;
 
-
 -- Get all comments for one article
 SELECT * FROM comments WHERE article_id = 1 ORDER BY created_at;
+
 -- comment_count, which is the total count of all the comments with this article_id. You should make use of queries to the database in order to achieve this.
 SELECT article_id, SUM(article_id) as comment_count
 FROM comments

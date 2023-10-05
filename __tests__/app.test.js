@@ -152,7 +152,6 @@ describe.skip('GET /api/articles/:article_id/comments', () => {
       .expect(200)
       .then((response) => {
         const comments = response.body;
-        console.log(comments, "comments");
         expect(Array.isArray(comments)).toBe(true)
 
         comments.forEach((comment) => {
@@ -162,7 +161,12 @@ describe.skip('GET /api/articles/:article_id/comments', () => {
             expect(comment).toHaveProperty("author")
             expect(comment).toHaveProperty("body")
             expect(comment).toHaveProperty("article_id")
-
+            expect(typeof comment.comment_id).toBe("number")
+            expect(typeof comment.votes).toBe("number")
+            expect(typeof comment.author).toBe("string")
+            expect(typeof comment.created_at).toBe("string")
+            expect(typeof comment.body).toBe("string")
+            expect(typeof comment.article_id).toBe("number")
           });
       });
   });
@@ -173,23 +177,31 @@ describe.skip('GET /api/articles/:article_id/comments', () => {
       .then((response) => {
         const comments = response.body;
 
-        expect(comments).toBeSortedBy('created_at');
+        expect(comments).toBeSortedBy('created_at', { descending: true });
       });
   });
   test('Sends an appropriate status and error message when given a valid id but has no values', () => {
     return request(app)
       .get('/api/articles/2/comments')
-      .expect(404)
+      .expect(200)
       .then((response) => {
-        expect(response.body.msg).toBe('Article has no comments');
+        expect(response.body.msg).toBe('Article does exist but has no comments');
       });
   });
-  test('Sends an appropriate status and error message when given an invalid article id', () => {
+  test('Sends an appropriate status and error message when given an valid but none existent id', () => {
     return request(app)
       .get('/api/articles/999/comments')
       .expect(404)
       .then((response) => {
         expect(response.body.msg).toBe('Article does not exist');
+      });
+  });
+  test('sends an appropriate status and error message when given an invalid id', () => {
+    return request(app)
+      .get('/api/articles/not-a-team/comments')
+      .expect(400)
+      .then((response) => {
+        expect(response.body.msg).toBe('Bad request');
       });
   });
 });

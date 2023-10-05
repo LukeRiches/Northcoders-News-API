@@ -72,6 +72,7 @@ You are now connected to database "nc_news_test" as user "LukeRiches".
           2 | The beautiful thing about treasure is that it exists. Got to find out what kind of sheets these are; not cotton, not rayon, silky.                                                   |          1 | butter_bridge |    14 | 2020-10-31 03:03:00
           5 | I hate streaming noses                                                                                                                                                               |          1 | icellusedkars |     0 | 2020-11-03 21:00:00
 (11 rows)
+=========
  article_id | comment_count 
 ------------+---------------
           9 |            18

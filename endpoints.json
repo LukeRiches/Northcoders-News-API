@@ -47,7 +47,7 @@
       ]
     }
   },
-  "":{
+  "GET /api/articles/:article_id/comments":{
     "description": "serves all the comments associated with an article_id",
     "queries": [],
     "": {
