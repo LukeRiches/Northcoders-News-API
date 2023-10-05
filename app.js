@@ -1,7 +1,7 @@
 const express = require("express");
 const app = express();
 
-const {getTopics, getApi, getArticleByID, getArticles, getCommentsByID, postComment} = require("./Controllers");
+const {getTopics, getApi, getArticleByID, getArticles, getCommentsByID, postComment, getUsers, getUser} = require("./Controllers");
 
 app.use(express.json());
 
@@ -18,6 +18,11 @@ app.get("/api/articles/:article_id", getArticleByID)
 app.get('/api/articles/:article_id/comments', getCommentsByID);
 
 app.post("/api/articles/:article_id/comments", postComment)
+
+app.get("/api/users", getUsers)
+
+app.get("/api/users/:username", getUser)
+
 
 //Path not found error
 app.use((req, res) => {
