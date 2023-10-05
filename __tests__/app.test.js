@@ -78,7 +78,7 @@ describe('GET /api/articles', () => {
         .then((res) => {
           // console.log(res.body, "res.body")
             const articles = res.body.articles;
-            console.log(articles, "articles");
+            // console.log(articles, "articles");
             expect(articles).toBeSortedBy('created_at', {descending: true})
         });
     });
