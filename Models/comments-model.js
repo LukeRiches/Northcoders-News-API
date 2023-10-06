@@ -17,7 +17,6 @@ function fetchCommentsByID(article_id){
 }
 
 function insertComment ({ username, body}, article_id){
-    // console.log(username, body, article_id, "username, body, article_id");
     return db
       .query(
         'INSERT INTO comments (body, article_id, author) VALUES ($1, $2, $3) RETURNING *;',

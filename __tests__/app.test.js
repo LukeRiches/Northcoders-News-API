@@ -211,26 +211,7 @@ describe('GET /api/articles/:article_id/comments', () => {
   });
 });
 
-/** CORE: POST /api/articles/:article_id/comments
-Description
-Should:
-be available on /api/articles/:article_id/comments.
-add a comment for an article.
-
-Request body accepts:
-an object with the following properties:
-username
-body
-
-Responds with:
-the posted comment.
-
-Consider what errors could occur with this endpoint, and make sure to test for them.
-
-Remember to add a description of this endpoint to your /api endpoint. 
-*/
-
-describe.only('POST /api/articles/:article_id/comments', () => {
+describe('POST /api/articles/:article_id/comments', () => {
   test('A succesful comment should respond with an appropriate status and the posted comment with correct comment properties', () => {
     const newComment = {
       username : 'lurker',
@@ -241,7 +222,6 @@ describe.only('POST /api/articles/:article_id/comments', () => {
       .send(newComment)
       .expect(201)
       .then((response) => {
-        // console.log(response, "response")
         const comment = response.body.comment;
         
         expect(comment).toHaveProperty("comment_id")
@@ -289,7 +269,7 @@ describe.only('POST /api/articles/:article_id/comments', () => {
         expect(response.body.msg).toBe('User does not exist');
       });
   });
-  test.skip('Responds with an appropriate status and error message when provided with an Invalid request body', () => {
+  test('Responds with an appropriate status and error message when provided with an Invalid request body', () => {
     const badComment = {
       user : "Test"
     };
@@ -301,27 +281,7 @@ describe.only('POST /api/articles/:article_id/comments', () => {
         expect(response.body.msg).toBe('Invalid request body');
       });
   });
-  test.skip('Responds with an appropriate status and error message when provided with Wrong request body type', () => {
-    const badComment = {
-      username : 123,
-      body : 456
-    };
-    return request(app)
-      .post('/api/articles/1/comments')
-      .send(badComment)
-      .expect(400)
-      .then((response) => {
-        expect(response.body.msg).toBe('Wrong request body type');
-      });
-  });
 });
-
-/** When inserting to comments:
- - comment_id is serialised (don't need)
- - votes and created at default (don't need)
- - needs body and username (given in req.body) 
- - needs article_id (given in req.params)
-*/
 
 describe('GET /api/users', () => {
   test('Should respond with a users array of users objects ', () => {

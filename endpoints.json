@@ -50,7 +50,7 @@
   "GET /api/articles/:article_id/comments":{
     "description": "serves all the comments associated with an article_id",
     "queries": [],
-    "": {
+    "exampleResponse": {
       "comments":[
         {
           "comment_id": 1,
@@ -62,7 +62,24 @@
         }
       ]
     }
+  },
+  "POST /api/articles/:article_id/comments":{
+    "description": "Creates a comment to the given article",
+    "queries": [],
+    "format": {
+      "username" : "Must-be-an-existing-username",
+      "body" : "body..."
+    },
+    "exampleResponse": {
+      "comment": {
+        "comment_id" : 19,
+        "body" : "body...",
+        "article_id" : 1,
+        "author" : "existing-username",
+        "votes" : 0,
+        "created_at": "2023-10-06T09:55:37.094Z"
+      }
+    }
   }
-
 }
 

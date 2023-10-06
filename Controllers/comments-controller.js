@@ -7,13 +7,10 @@ function getCommentsByID(req, res, next) {
 
     fetchArticleByID(article_id)
     .then(()=>{
-        fetchCommentsByID(article_id)
-        .then((comments)=>{
-            res.status(200).send(comments)
-        })
-        .catch((err)=>{
-            next(err);
-        }); 
+       return fetchCommentsByID(article_id)
+    })
+    .then((comments)=>{
+        res.status(200).send(comments)
     })
     .catch((err)=>{
         next(err);
@@ -25,25 +22,24 @@ function postComment(req, res, next){
     const username = newComment.username;
     const {article_id} = req.params;
 
-    const allowedBody = ["username", "body"];
+    function bodyCheck(newComment){
+        
+        if (!newComment.hasOwnProperty("username") ||!newComment.hasOwnProperty("body") || Object.keys(newComment).length !== 2) {
+            return  Promise.reject({
+                status: 400, 
+                msg : "Invalid request body"
+            })
+        }
+    }
 
-    // console.log(Object.keys(newComment), "newComment keys");
-
-    // if(Object.keys(newComment)!== allowedBody){
-    //     res.status(400).send({msg : "Invalid request body"})
-    // }
-
-    // Couldn't do the above with a Promise.reject unsure why ^
-
-    Promise.all([fetchArticleByID(article_id), fetchUser(username)])
+    Promise.all([fetchArticleByID(article_id), fetchUser(username), bodyCheck(newComment)])
     .then(() => {
-        insertComment(newComment, article_id)
-        .then((comment) => {
-            res.status(201).send({comment})
-        })
+       return  insertComment(newComment, article_id)
+    })
+    .then((comment) => {
+        res.status(201).send({comment})
     })
     .catch((err)=>{
-        // console.log(err, "err");
         next(err);
     });
 
