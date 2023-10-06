@@ -30,3 +30,18 @@ ON articles.article_id = comments.article_id
 GROUP BY articles.author, articles.title, articles.article_id, articles.topic, articles.created_at, articles.votes, articles.article_img_url
 ORDER BY created_at;
 
+-- POST comment
+
+-- INSERT INTO comments 
+-- (body, article_id, author) 
+-- VALUES ("test", 1, "lurker"); 
+-- RETURNING *;
+
+INSERT INTO comments (body, article_id, author) VALUES ("abc", 1, "lurker") RETURNING *;
+
+-- INSERT INTO mytable
+-- VALUES (value_or_expr, another_value_or_expr, …),
+--        (value_or_expr_2, another_value_or_expr_2, …),
+--        …;
+
+

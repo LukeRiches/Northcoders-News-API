@@ -1,4 +1,4 @@
-const {fetchArticleByID, fetchArticles, fetchCommentsByID} = require("../Models/articles-model")
+const {fetchArticleByID, fetchArticles} = require("../Models/articles-model")
 
 function getArticleByID(req, res, next){
     // console.log("in controller");
@@ -29,31 +29,5 @@ function getArticles(req, res, next){
     });
 }
 
-function getCommentsByID(req, res, next) {
-    const { article_id } = req.params;
 
-    // Promise.all([fetchArticleByID(article_id), fetchCommentsByID(article_id)])
-    // .then((comments)=>{
-
-    //     res.status(200).send(comments)
-    // })
-    // .catch((err)=>{
-    //     next(err);
-    // });
-
-    fetchArticleByID(article_id)
-    .then(()=>{
-        fetchCommentsByID(article_id)
-        .then((comments)=>{
-            res.status(200).send(comments)
-        })
-        .catch((err)=>{
-            next(err);
-        }); 
-    })
-    .catch((err)=>{
-        next(err);
-    });
-}
-
-module.exports = {getArticleByID, getArticles, getCommentsByID};
+module.exports = {getArticleByID, getArticles};
