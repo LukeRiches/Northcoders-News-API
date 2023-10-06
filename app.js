@@ -15,8 +15,6 @@ app.get("/api/articles/:article_id", getArticleByID)
 
 app.get('/api/articles/:article_id/comments', getCommentsByID);
 
-
-
 app.get("/api/users", getUsers)
 
 app.get("/api/users/:username", getUser)
