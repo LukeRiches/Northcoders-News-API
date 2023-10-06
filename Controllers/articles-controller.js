@@ -17,27 +17,7 @@ function getArticles(req, res, next){
 
     const query = req.query
 
-    // function checkQuery(query){
-    //     if(!query.hasOwnProperty("topic")){
-    //         Promise.reject({
-    //             status : 400, 
-    //             msg : "Not a valid query"
-    //         })
-    //     }
-    // }
-
     const {topic} = req.query
-
-    // Promise.all([checkQuery(query)])
-    // .then(() => {
-    //    return fetchArticles(topic)
-    // })
-    // .then((articles) => {
-    //     res.status(200).send({articles})
-    // })
-    // .catch((err)=>{
-    //     next(err);
-    // });
 
     fetchArticles(topic)
     .then((articles)=>{

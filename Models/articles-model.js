@@ -42,6 +42,8 @@ function fetchArticles(topic){
     })
 }
 
+// return Promise.reject({status : 200, msg : "Topic does exist but there are no articles for it yet"})
+
 function fetchCommentsByID(article_id){
     let query = "SELECT * FROM comments WHERE article_id = $1 ORDER BY created_at DESC;"
 

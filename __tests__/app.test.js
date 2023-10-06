@@ -93,14 +93,6 @@ describe('GET /api/articles', () => {
             })
         })
     });
-    // test("when given a query that doesn't exist, sends an appropriate error and error message", () => {
-    //     return request(app)
-    //       .get('/api/articles?non-existent-query=not_a_valid_query')
-    //       .expect(400)
-    //       .then((response) => {
-    //         expect(response.body.msg).toBe('Not a valid query');
-    //     });
-    // });
 });
 
 describe('GET /api/articles?topic', () => {
@@ -151,6 +143,14 @@ describe('GET /api/articles?topic', () => {
       .expect(404)
       .then((response) => {
         expect(response.body.msg).toBe('topic does not exist');
+    });
+  })
+  test.skip("when given an invalid topic value specified in the query, sends an appropriate error and error message", () => {
+    return request(app)
+      .get('/api/articles?topic=')
+      .expect(200)
+      .then((response) => {
+        expect(response.body.msg).toBe('Topic does exist but there are no articles for it yet');
     });
   })
 });

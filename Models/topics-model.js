@@ -9,4 +9,13 @@ function fetchTopics(){
     })
 }
 
-module.exports = {fetchTopics};
+function fetchTopic(topic){
+
+    let query = "SELECT * FROM topics WHERE slug = $1;"
+
+    return db.query(query,[topic]).then(({rows}) => {
+        return rows;
+    })
+}
+
+module.exports = {fetchTopics, fetchTopic};
