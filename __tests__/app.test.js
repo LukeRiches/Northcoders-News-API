@@ -243,7 +243,6 @@ describe.only('POST /api/articles/:article_id/comments', () => {
       .then((response) => {
         // console.log(response, "response")
         const comment = response.body.comment;
-        console.log(comment)
         
         expect(comment).toHaveProperty("comment_id")
         expect(typeof comment.comment_id).toBe("number")
@@ -277,7 +276,20 @@ describe.only('POST /api/articles/:article_id/comments', () => {
         expect(response.body.msg).toBe('Article does not exist');
       });
   });
-  test.skip('Responds with an appropriate status and error message when provided with a bad comment (Wrong Properties)', () => {
+  test("Responds with an appropriate status and error message when provided with a username that doesn't match an existing username from the users table", () => {
+    const badComment = {
+      username : "Test",
+      body : "body..."
+    };
+    return request(app)
+      .post('/api/articles/1/comments')
+      .send(badComment)
+      .expect(404)
+      .then((response) => {
+        expect(response.body.msg).toBe('User does not exist');
+      });
+  });
+  test.skip('Responds with an appropriate status and error message when provided with an Invalid request body', () => {
     const badComment = {
       user : "Test"
     };
@@ -286,10 +298,10 @@ describe.only('POST /api/articles/:article_id/comments', () => {
       .send(badComment)
       .expect(400)
       .then((response) => {
-        expect(response.body.msg).toBe('Bad Request');
+        expect(response.body.msg).toBe('Invalid request body');
       });
   });
-  test.skip('Responds with an appropriate status and error message when provided with a bad comment (Wrong property type)', () => {
+  test.skip('Responds with an appropriate status and error message when provided with Wrong request body type', () => {
     const badComment = {
       username : 123,
       body : 456
@@ -299,45 +311,7 @@ describe.only('POST /api/articles/:article_id/comments', () => {
       .send(badComment)
       .expect(400)
       .then((response) => {
-        expect(response.body.msg).toBe('Bad Request');
-      });
-  });
-  test.skip("Responds with an appropriate status and error message when provided with a bad comment (Doesn't include all the required properties)", () => {
-    const badComment = {
-      username : "Test"
-    };
-    return request(app)
-      .post('/api/articles/1/comments')
-      .send(badComment)
-      .expect(400)
-      .then((response) => {
-        expect(response.body.msg).toBe('Bad Request');
-      });
-  });
-  test.skip("Responds with an appropriate status and error message when provided with a bad comment (username doesn't match an existing username from the users table)", () => {
-    const badComment = {
-      username : "Test",
-      body : "body..."
-    };
-    return request(app)
-      .post('/api/articles/1/comments')
-      .send(badComment)
-      .expect(400)
-      .then((response) => {
-        expect(response.body.msg).toBe('Bad Request');
-      });
-  });
-  test.skip("Responds with an appropriate status and error message when provided with a bad comment (username and body are blank)", () => {
-    const badComment = {
-      username : "",
-      body : ""
-    };
-    return request(app)
-      .post('/api/articles/1/comments')
-      .send(badComment)
-      .expect(400)
-      .then((response) => {
-        expect(response.body.msg).toBe('Bad Request');
+        expect(response.body.msg).toBe('Wrong request body type');
       });
   });
 });
@@ -347,22 +321,6 @@ describe.only('POST /api/articles/:article_id/comments', () => {
  - votes and created at default (don't need)
  - needs body and username (given in req.body) 
  - needs article_id (given in req.params)
-*/
-/** CORE: GET /api/users
-Description
-Should:
-be available on /api/users.
-get all users.
-
-Responds with:
-an array of objects, each object should have the following properties:
-username
-name
-avatar_url
-
-Consider what errors could occur with this endpoint, and make sure to test for them.
-
-Remember to add a description of this endpoint to your /api endpoint.
 */
 
 describe('GET /api/users', () => {

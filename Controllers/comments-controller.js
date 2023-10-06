@@ -1,5 +1,6 @@
 const { fetchArticleByID} = require("../Models/articles-model");
 const { fetchCommentsByID, insertComment } = require("../Models/comments-model");
+const { fetchUser } = require("../Models/users-model");
 
 function getCommentsByID(req, res, next) {
     const { article_id } = req.params;
@@ -21,26 +22,31 @@ function getCommentsByID(req, res, next) {
 
 function postComment(req, res, next){
     const newComment = req.body;
-
+    const username = newComment.username;
     const {article_id} = req.params;
 
-    // insertComment(newComment, article_id)
-    // .then((comment) => {
-    //   res.status(201).send({comment})
-    // })
-    // .catch(next);
+    const allowedBody = ["username", "body"];
 
-    fetchArticleByID(article_id)
-    .then(()=>{
+    // console.log(Object.keys(newComment), "newComment keys");
+
+    // if(Object.keys(newComment)!== allowedBody){
+    //     res.status(400).send({msg : "Invalid request body"})
+    // }
+
+    // Couldn't do the above with a Promise.reject unsure why ^
+
+    Promise.all([fetchArticleByID(article_id), fetchUser(username)])
+    .then(() => {
         insertComment(newComment, article_id)
         .then((comment) => {
             res.status(201).send({comment})
         })
-        .catch(next);
     })
     .catch((err)=>{
+        // console.log(err, "err");
         next(err);
     });
+
 }
 
 
