@@ -14,7 +14,15 @@ function fetchTopic(topic){
     let query = "SELECT * FROM topics WHERE slug = $1;"
 
     return db.query(query,[topic]).then(({rows}) => {
-        return rows;
+        const topic = rows[0];
+        if (topic === undefined) {
+            return Promise.reject({
+                status: 200, 
+                msg : "Topic does exist but has no comments"
+            })
+        } else {
+            return rows;
+        }
     })
 }
 

@@ -30,16 +30,13 @@ function getArticles(req, res, next){
 
 function getCommentsByID(req, res, next) {
     const { article_id } = req.params;
-    
+
     fetchArticleByID(article_id)
     .then(()=>{
-        fetchCommentsByID(article_id)
-        .then((comments)=>{
-            res.status(200).send(comments)
-        })
-        .catch((err)=>{
-            next(err);
-        }); 
+       return  fetchCommentsByID(article_id)    
+    })
+    .then((comments)=>{
+        res.status(200).send(comments)
     })
     .catch((err)=>{
         next(err);
