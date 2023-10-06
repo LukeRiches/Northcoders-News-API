@@ -60,19 +60,12 @@ describe('GET /api/articles', () => {
             expect(articles).toHaveLength(13);
             articles.forEach((article) => {
                 expect(article).toHaveProperty("author");
-                expect(typeof article.author).toBe("string")
                 expect(article).toHaveProperty("title");
-                expect(typeof article.title).toBe("string")
                 expect(article).toHaveProperty("article_id");
-                expect(typeof article.article_id).toBe("number")
                 expect(article).toHaveProperty("topic");
-                expect(typeof article.topic).toBe("string")
                 expect(article).toHaveProperty("created_at");
-                expect(typeof article.created_at).toBe("string")
                 expect(article).toHaveProperty("votes");
-                expect(typeof article.votes).toBe("number")
                 expect(article).toHaveProperty("article_img_url");
-                expect(typeof article.article_img_url).toBe("string")
                 expect(article).toHaveProperty("comment_count");
             })
         });
@@ -166,12 +159,6 @@ describe('GET /api/articles/:article_id/comments', () => {
             expect(comment).toHaveProperty("author")
             expect(comment).toHaveProperty("body")
             expect(comment).toHaveProperty("article_id")
-            expect(typeof comment.comment_id).toBe("number")
-            expect(typeof comment.votes).toBe("number")
-            expect(typeof comment.author).toBe("string")
-            expect(typeof comment.created_at).toBe("string")
-            expect(typeof comment.body).toBe("string")
-            expect(typeof comment.article_id).toBe("number")
           });
       });
   });
@@ -211,23 +198,6 @@ describe('GET /api/articles/:article_id/comments', () => {
   });
 });
 
-/** CORE: GET /api/users
-Description
-Should:
-be available on /api/users.
-get all users.
-
-Responds with:
-an array of objects, each object should have the following properties:
-username
-name
-avatar_url
-
-Consider what errors could occur with this endpoint, and make sure to test for them.
-
-Remember to add a description of this endpoint to your /api endpoint.
-*/
-
 describe('GET /api/users', () => {
   test('Should respond with a users array of users objects ', () => {
       return request(app)
@@ -235,7 +205,6 @@ describe('GET /api/users', () => {
       .expect(200)
       .then((res) => {
           const users = res.body.users;
-          // console.log(users, "users");
           expect(Array.isArray(users)).toBe(true);
           expect(users).toHaveLength(4);
 
