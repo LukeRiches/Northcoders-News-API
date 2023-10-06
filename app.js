@@ -1,7 +1,9 @@
 const express = require("express");
 const app = express();
 
-const {getTopics, getApi, getArticleByID, getArticles, getCommentsByID} = require("./Controllers");
+const {getTopics, getApi, getArticleByID, getArticles, getCommentsByID, postComment} = require("./Controllers");
+
+app.use(express.json());
 
 //Happy paths
 
@@ -15,6 +17,9 @@ app.get("/api/articles/:article_id", getArticleByID)
 
 app.get('/api/articles/:article_id/comments', getCommentsByID);
 
+app.post("/api/articles/:article_id/comments", postComment)
+
+
 //Path not found error
 app.use((req, res) => {
     res.status(404).send({ msg: 'Path not found' })
@@ -23,7 +28,6 @@ app.use((req, res) => {
 //Error handling middleware functions 
 app.use((err, req, res, next) => {
     //user error
-    // console.log(err, "err1")
     if (err.status) {
       res.status(err.status).send({ msg: err.msg });
     } else next(err);
@@ -31,10 +35,23 @@ app.use((err, req, res, next) => {
   
 app.use((err, req, res, next) => {
     //psql user related error
-    // console.log(err, "err2");
-    if(err.code === '22P02'){
-      res.status(400).send({msg : 'Bad request'});
+    if(err.code === '22P02' ){
+      res.status(400).send({msg : 'Invalid text representation'});
     } else next(err);
+});
+
+app.use((err, req, res, next) => {
+  //psql user related error
+  if(err.code === '23503' ){
+    res.status(404).send({msg : 'Foreign key violation'});
+  } else next(err);
+});
+
+app.use((err, req, res, next) => {
+  //psql user related error
+  if(err.code === '23502' ){
+    res.status(400).send({msg : 'Not null violation'});
+  } else next(err);
 });
 
 //Internal system error if no catches are made

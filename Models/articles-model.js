@@ -59,6 +59,4 @@ function fetchCommentsByID(article_id){
     })
 }
 
-
-
 module.exports = {fetchArticleByID, fetchArticles, fetchCommentsByID};

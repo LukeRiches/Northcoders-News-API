@@ -1,4 +1,4 @@
-const {fetchArticleByID, fetchArticles, fetchCommentsByID} = require("../Models/articles-model")
+const {fetchArticleByID, fetchArticles} = require("../Models/articles-model")
 
 function getArticleByID(req, res, next){
     // console.log("in controller");
@@ -30,7 +30,7 @@ function getArticles(req, res, next){
 
 function getCommentsByID(req, res, next) {
     const { article_id } = req.params;
-
+    
     fetchArticleByID(article_id)
     .then(()=>{
         fetchCommentsByID(article_id)
