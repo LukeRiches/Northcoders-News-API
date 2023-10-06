@@ -14,13 +14,32 @@ function getArticleByID(req, res, next){
 }
 
 function getArticles(req, res, next){
-    // console.log(req.query, "req.querys");
 
-    if(Object.keys(req.query).length >= 1){
-        return res.status(400).send({msg : "No queries have been declared yet"})
-    }
+    const query = req.query
 
-    fetchArticles()
+    // function checkQuery(query){
+    //     if(!query.hasOwnProperty("topic")){
+    //         Promise.reject({
+    //             status : 400, 
+    //             msg : "Not a valid query"
+    //         })
+    //     }
+    // }
+
+    const {topic} = req.query
+
+    // Promise.all([checkQuery(query)])
+    // .then(() => {
+    //    return fetchArticles(topic)
+    // })
+    // .then((articles) => {
+    //     res.status(200).send({articles})
+    // })
+    // .catch((err)=>{
+    //     next(err);
+    // });
+
+    fetchArticles(topic)
     .then((articles)=>{
         res.status(200).send({articles})
     })
@@ -31,15 +50,6 @@ function getArticles(req, res, next){
 
 function getCommentsByID(req, res, next) {
     const { article_id } = req.params;
-
-    // Promise.all([fetchArticleByID(article_id), fetchCommentsByID(article_id)])
-    // .then((comments)=>{
-
-    //     res.status(200).send(comments)
-    // })
-    // .catch((err)=>{
-    //     next(err);
-    // });
 
     fetchArticleByID(article_id)
     .then(()=>{

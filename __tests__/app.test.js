@@ -93,20 +93,67 @@ describe('GET /api/articles', () => {
             })
         })
     });
-    test('when given a query but none exist yet, sends an appropriate error and error message', () => {
-        return request(app)
-          .get('/api/articles?non-existent-query=not_a_valid_query')
-          .expect(400)
-          .then((response) => {
-            expect(response.body.msg).toBe('No queries have been declared yet');
-        });
-    });
-    /**  Once queries are added further testing for: 
-    - When query exists but not a valid input
-    - When given a non existent query sends an appropriate error and error message
-    */ 
+    // test("when given a query that doesn't exist, sends an appropriate error and error message", () => {
+    //     return request(app)
+    //       .get('/api/articles?non-existent-query=not_a_valid_query')
+    //       .expect(400)
+    //       .then((response) => {
+    //         expect(response.body.msg).toBe('Not a valid query');
+    //     });
+    // });
 });
 
+describe('GET /api/articles?topic', () => {
+  test('should respond with an articles array of article objects ', () => {
+      return request(app)
+      .get("/api/articles?topic=cats")
+      .expect(200)
+      .then((res) => {
+          const articles = res.body.articles;
+          expect(Array.isArray(articles)).toBe(true);
+          expect(articles).toHaveLength(1);
+
+          articles.forEach((article) => {
+              expect(article).toHaveProperty("author");
+              expect(article).toHaveProperty("title");
+              expect(article).toHaveProperty("article_id");
+              expect(article).toHaveProperty("topic");
+              expect(article).toHaveProperty("created_at");
+              expect(article).toHaveProperty("votes");
+              expect(article).toHaveProperty("article_img_url");
+              expect(article).toHaveProperty("comment_count");
+          })
+      });
+  });
+  test('should be sorted by date in descending order', () => {
+      return request(app)
+      .get("/api/articles?topic=cats")
+      .expect(200)
+      .then((res) => {
+          const articles = res.body.articles;
+          expect(articles).toBeSortedBy('created_at', {descending: true})
+      });
+  });
+  test('should not be a body property present on any of the article objects.', () => {
+      return request(app)
+      .get("/api/articles?topic=cats")
+      .expect(200)
+      .then((res) => {
+          const articles = res.body.articles;
+          articles.forEach((article) => {
+              expect(article).not.toHaveProperty("body");
+          })
+      })
+  });
+  test("when given an invalid topic value specified in the query, sends an appropriate error and error message", () => {
+    return request(app)
+      .get('/api/articles?topic=not_a_valid_query')
+      .expect(404)
+      .then((response) => {
+        expect(response.body.msg).toBe('topic does not exist');
+    });
+  })
+});
 
 describe('GET /api/articles/:article_id', () => {
     test('should respond with a single article object', () => {
