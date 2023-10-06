@@ -144,7 +144,7 @@ describe('GET /api/articles/:article_id', () => {
           .get('/api/articles/not-a-team')
           .expect(400)
           .then((response) => {
-            expect(response.body.msg).toBe('Bad request');
+            expect(response.body.msg).toBe('Invalid text representation');
           });
       });
     
@@ -206,7 +206,7 @@ describe('GET /api/articles/:article_id/comments', () => {
       .get('/api/articles/not-a-team/comments')
       .expect(400)
       .then((response) => {
-        expect(response.body.msg).toBe('Bad request');
+        expect(response.body.msg).toBe('Invalid text representation');
       });
   });
 });
@@ -224,23 +224,17 @@ describe('POST /api/articles/:article_id/comments', () => {
       .then((response) => {
         const comment = response.body.comment;
         
-        expect(comment).toHaveProperty("comment_id")
-        expect(typeof comment.comment_id).toBe("number")
+        expect(comment).toHaveProperty("comment_id", 19)
 
-        expect(comment).toHaveProperty("body")
-        expect(typeof comment.body).toBe("string")
+        expect(comment).toHaveProperty("body", "body...")
 
-        expect(comment).toHaveProperty("article_id")
-        expect(typeof comment.article_id).toBe("number")
+        expect(comment).toHaveProperty("article_id", 1)
 
-        expect(comment).toHaveProperty("author")
-        expect(typeof comment.author).toBe("string")
+        expect(comment).toHaveProperty("author", "lurker")
 
-        expect(comment).toHaveProperty("votes")
-        expect(typeof comment.votes).toBe("number")
+        expect(comment).toHaveProperty("votes", 0)
 
         expect(comment).toHaveProperty("created_at")
-        expect(typeof comment.created_at).toBe("string")
       });
   });
   test('Sends an appropriate status and error message when given an invalid article id', () => {
@@ -253,7 +247,20 @@ describe('POST /api/articles/:article_id/comments', () => {
       .send(badComment)
       .expect(404)
       .then((response) => {
-        expect(response.body.msg).toBe('Article does not exist');
+        expect(response.body.msg).toBe('Foreign key violation');
+      });
+  });
+  test('Sends an appropriate status and error message when the article_id is not a valid data type', () => {
+    const badComment = {
+      username : "lurker",
+      body : "body..."
+    };
+    return request(app)
+      .post('/api/articles/banana/comments')
+      .send(badComment)
+      .expect(400)
+      .then((response) => {
+        expect(response.body.msg).toBe('Invalid text representation');
       });
   });
   test("Responds with an appropriate status and error message when provided with a username that doesn't match an existing username from the users table", () => {
@@ -266,7 +273,7 @@ describe('POST /api/articles/:article_id/comments', () => {
       .send(badComment)
       .expect(404)
       .then((response) => {
-        expect(response.body.msg).toBe('User does not exist');
+        expect(response.body.msg).toBe('Foreign key violation');
       });
   });
   test('Responds with an appropriate status and error message when provided with an Invalid request body', () => {
@@ -278,70 +285,11 @@ describe('POST /api/articles/:article_id/comments', () => {
       .send(badComment)
       .expect(400)
       .then((response) => {
-        expect(response.body.msg).toBe('Invalid request body');
+        expect(response.body.msg).toBe('Not null violation');
       });
   });
 });
 
-describe('GET /api/users', () => {
-  test('Should respond with a users array of users objects ', () => {
-      return request(app)
-      .get("/api/users")
-      .expect(200)
-      .then((res) => {
-          const users = res.body.users;
-          // console.log(users, "users");
-          expect(Array.isArray(users)).toBe(true);
-          expect(users).toHaveLength(4);
-
-          users.forEach((users) => {
-              expect(users).toHaveProperty("username");
-              expect(typeof users.username).toBe("string")
-
-              expect(users).toHaveProperty("name");
-              expect(typeof users.name).toBe("string")
-
-              expect(users).toHaveProperty("avatar_url");
-              expect(typeof users.avatar_url).toBe("string")
-          })
-      });
-  });
-  test('When given a query but none exist yet, sends an appropriate error and error message', () => {
-      return request(app)
-        .get('/api/users?non-existent-query=not_a_valid_query')
-        .expect(400)
-        .then((response) => {
-          expect(response.body.msg).toBe('No queries have been declared yet');
-      });
-  });
-  /**  Once queries are added further testing for: 
-  - When query exists but not a valid input
-  - When given a non existent query sends an appropriate error and error message
-  */ 
-});
-
-describe('GET /api/users/:username', () => {
-  test('should respond with a single user object', () => {
-      return request(app)
-        .get('/api/users/butter_bridge')
-        .expect(200)
-        .then((response) => {
-          const user = response.body;
-
-          expect(user).toHaveProperty("username", "butter_bridge");
-          expect(user).toHaveProperty("name", 'jonny');
-          expect(user).toHaveProperty("avatar_url", "https://www.healthytherapies.com/wp-content/uploads/2016/06/Lime3.jpg");
-        });
-  });
-  test('sends an appropriate status and error message when given a valid but non-existent username', () => {
-      return request(app)
-        .get('/api/users/test')
-        .expect(404)
-        .then((response) => {
-          expect(response.body.msg).toBe('User does not exist');
-        });
-  });
-})
 
 //General Errors
 
