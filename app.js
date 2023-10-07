@@ -19,6 +19,10 @@ app.get('/api/articles/:article_id/comments', getCommentsByID);
 
 app.post("/api/articles/:article_id/comments", postComment)
 
+// app.get("/api/users", getUsers)
+
+// app.get("/api/users/:username", getUser)
+
 
 //Path not found error
 app.use((req, res) => {
