@@ -18,7 +18,7 @@ SELECT * FROM comments;
 SELECT * FROM comments WHERE article_id = 1 ORDER BY created_at;
 
 -- comment_count, which is the total count of all the comments with this article_id. You should make use of queries to the database in order to achieve this.
-SELECT article_id, SUM(article_id) as comment_count
+SELECT article_id, COUNT(article_id) as comment_count
 FROM comments
 GROUP BY article_id;
 
@@ -47,9 +47,5 @@ ORDER BY created_at;
 
 INSERT INTO comments (body, article_id, author) VALUES ("abc", 1, "lurker") RETURNING *;
 
--- INSERT INTO mytable
--- VALUES (value_or_expr, another_value_or_expr, …),
---        (value_or_expr_2, another_value_or_expr_2, …),
---        …;
 
 
