@@ -2,5 +2,6 @@ const { getApi } = require('./api-controller');
 const {getArticleByID, getArticles} = require('./articles-controller');
 const { getCommentsByID, postComment } = require('./comments-controller');
 const { getTopics } = require('./topics-controller');
+const { getUsers, getUser } = require('./users-controller');
 
-module.exports = {getTopics, getApi, getArticleByID, getArticles, getCommentsByID, postComment,}
+module.exports = {getTopics, getApi, getArticleByID, getArticles, getCommentsByID, postComment, getUsers, getUser}
