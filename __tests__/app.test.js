@@ -277,7 +277,7 @@ describe('POST /api/articles/:article_id/comments', () => {
   });
 });
 
-describe.skip('GET /api/users', () => {
+describe('GET /api/users', () => {
   test('Should respond with a users array of users objects ', () => {
       return request(app)
       .get("/api/users")
@@ -314,7 +314,7 @@ describe.skip('GET /api/users', () => {
   */ 
 });
 
-describe.skip('GET /api/users/:username', () => {
+describe('GET /api/users/:username', () => {
   test('should respond with a single user object', () => {
       return request(app)
         .get('/api/users/butter_bridge')
