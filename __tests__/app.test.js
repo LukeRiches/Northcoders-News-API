@@ -277,6 +277,65 @@ describe('POST /api/articles/:article_id/comments', () => {
   });
 });
 
+describe.skip('GET /api/users', () => {
+  test('Should respond with a users array of users objects ', () => {
+      return request(app)
+      .get("/api/users")
+      .expect(200)
+      .then((res) => {
+          const users = res.body.users;
+          // console.log(users, "users");
+          expect(Array.isArray(users)).toBe(true);
+          expect(users).toHaveLength(4);
+
+          users.forEach((users) => {
+              expect(users).toHaveProperty("username");
+              expect(typeof users.username).toBe("string")
+
+              expect(users).toHaveProperty("name");
+              expect(typeof users.name).toBe("string")
+
+              expect(users).toHaveProperty("avatar_url");
+              expect(typeof users.avatar_url).toBe("string")
+          })
+      });
+  });
+  test('When given a query but none exist yet, sends an appropriate error and error message', () => {
+      return request(app)
+        .get('/api/users?non-existent-query=not_a_valid_query')
+        .expect(400)
+        .then((response) => {
+          expect(response.body.msg).toBe('No queries have been declared yet');
+      });
+  });
+  /**  Once queries are added further testing for: 
+  - When query exists but not a valid input
+  - When given a non existent query sends an appropriate error and error message
+  */ 
+});
+
+describe.skip('GET /api/users/:username', () => {
+  test('should respond with a single user object', () => {
+      return request(app)
+        .get('/api/users/butter_bridge')
+        .expect(200)
+        .then((response) => {
+          const user = response.body;
+
+          expect(user).toHaveProperty("username", "butter_bridge");
+          expect(user).toHaveProperty("name", 'jonny');
+          expect(user).toHaveProperty("avatar_url", "https://www.healthytherapies.com/wp-content/uploads/2016/06/Lime3.jpg");
+        });
+  });
+  test('sends an appropriate status and error message when given a valid but non-existent username', () => {
+      return request(app)
+        .get('/api/users/test')
+        .expect(404)
+        .then((response) => {
+          expect(response.body.msg).toBe('User does not exist');
+        });
+  });
+})
 
 //General Errors
 
