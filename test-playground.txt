@@ -6,6 +6,15 @@ You are now connected to database "nc_news_test" as user "LukeRiches".
  paper | what books are made of
 (3 rows)
 
+ slug  |      description       
+-------+------------------------
+ paper | what books are made of
+(1 row)
+
+ slug | description 
+------+-------------
+(0 rows)
+
    username    |    name    |                                avatar_url                                 
 ---------------+------------+---------------------------------------------------------------------------
  butter_bridge | jonny      | https://www.healthytherapies.com/wp-content/uploads/2016/06/Lime3.jpg
@@ -75,10 +84,10 @@ You are now connected to database "nc_news_test" as user "LukeRiches".
 
  article_id | comment_count 
 ------------+---------------
-          9 |            18
-          3 |             6
-          5 |            10
-          6 |             6
+          9 |             2
+          3 |             2
+          5 |             2
+          6 |             1
           1 |            11
 (5 rows)
 

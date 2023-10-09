@@ -1,4 +1,5 @@
-const {fetchArticleByID, fetchArticles} = require("../Models/articles-model")
+const {fetchArticleByID, fetchArticles} = require("../Models/articles-model");
+const { fetchTopic } = require("../Models/topics-model");
 
 function getArticleByID(req, res, next){
     // console.log("in controller");
@@ -19,28 +20,27 @@ function getArticles(req, res, next){
 
     const {topic} = req.query
 
-    fetchArticles(topic)
-    .then((articles)=>{
-        res.status(200).send({articles})
-    })
-    .catch((err)=>{
-        next(err);
-    });
+    if(topic){
+        fetchTopic(topic)
+        .then(()=>{
+            return fetchArticles(topic)
+        })
+        .then((articles)=>{
+            res.status(200).send({articles})
+        })
+        .catch((err)=>{
+            next(err);
+        });
+    } else {
+        fetchArticles(topic)
+        .then((articles)=>{
+            res.status(200).send({articles})
+        })
+        .catch((err)=>{
+            next(err);
+        });
+    }
+
 }
 
-function getCommentsByID(req, res, next) {
-    const { article_id } = req.params;
-
-    fetchArticleByID(article_id)
-    .then(()=>{
-       return  fetchCommentsByID(article_id)    
-    })
-    .then((comments)=>{
-        res.status(200).send(comments)
-    })
-    .catch((err)=>{
-        next(err);
-    });
-}
-
-module.exports = {getArticleByID, getArticles, getCommentsByID};
+module.exports = {getArticleByID, getArticles};

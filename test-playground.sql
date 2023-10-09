@@ -2,6 +2,10 @@
 -- topics
 SELECT * FROM topics;
 
+SELECT * FROM topics WHERE slug = 'paper';
+
+SELECT * FROM topics WHERE slug = 'non-existent';
+
 --users
 SELECT * FROM users;
 
@@ -38,6 +42,7 @@ ORDER BY created_at;
 -- WHERE "articles.topic" = cats
 -- GROUP BY articles.author, articles.title, articles.article_id, articles.topic, articles.created_at, articles.votes, articles.article_img_url 
 -- ORDER BY created_at DESC;
+
 -- POST comment
 
 -- INSERT INTO comments 
@@ -45,7 +50,7 @@ ORDER BY created_at;
 -- VALUES ("test", 1, "lurker"); 
 -- RETURNING *;
 
-INSERT INTO comments (body, article_id, author) VALUES ("abc", 1, "lurker") RETURNING *;
+-- INSERT INTO comments (body, article_id, author) VALUES ("abc", 1, "lurker") RETURNING *;
 
 
 

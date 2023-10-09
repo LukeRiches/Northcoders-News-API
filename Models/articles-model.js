@@ -36,7 +36,7 @@ function fetchArticles(topic){
 
     return db.query(query, queryValues).then(({rows}) => {
         if(rows[0] === undefined && topic){
-            return Promise.reject({status : 404, msg : "topic does not exist"})
+            return Promise.reject({status : 200, msg : "Topic does exist but there are no articles for it yet"})
         }
         return rows;
     })

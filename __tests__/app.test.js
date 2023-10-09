@@ -101,7 +101,6 @@ describe('GET /api/articles?topic', () => {
       .expect(200)
       .then((res) => {
           const articles = res.body.articles;
-          expect(Array.isArray(articles)).toBe(true);
           expect(articles).toHaveLength(1);
 
           articles.forEach((article) => {
@@ -141,12 +140,12 @@ describe('GET /api/articles?topic', () => {
       .get('/api/articles?topic=not_a_valid_query')
       .expect(404)
       .then((response) => {
-        expect(response.body.msg).toBe('topic does not exist');
+        expect(response.body.msg).toBe('Topic does not exist');
     });
   })
-  test.skip("when given an invalid topic value specified in the query, sends an appropriate error and error message", () => {
+  test("when given a valid topic value but it has no articles, sends an appropriate error and error message", () => {
     return request(app)
-      .get('/api/articles?topic=')
+      .get('/api/articles?topic=paper')
       .expect(200)
       .then((response) => {
         expect(response.body.msg).toBe('Topic does exist but there are no articles for it yet');
