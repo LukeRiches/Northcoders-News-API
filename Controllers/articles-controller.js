@@ -1,4 +1,5 @@
-const {fetchArticleByID, fetchArticles} = require("../Models/articles-model")
+const {fetchArticleByID, fetchArticles} = require("../Models/articles-model");
+const { fetchTopic } = require("../Models/topics-model");
 
 function getArticleByID(req, res, next){
     // console.log("in controller");
@@ -14,20 +15,32 @@ function getArticleByID(req, res, next){
 }
 
 function getArticles(req, res, next){
-    // console.log(req.query, "req.querys");
 
-    if(Object.keys(req.query).length >= 1){
-        return res.status(400).send({msg : "No queries have been declared yet"})
+    const query = req.query
+
+    const {topic} = req.query
+
+    if(topic){
+        fetchTopic(topic)
+        .then(()=>{
+            return fetchArticles(topic)
+        })
+        .then((articles)=>{
+            res.status(200).send({articles})
+        })
+        .catch((err)=>{
+            next(err);
+        });
+    } else {
+        fetchArticles(topic)
+        .then((articles)=>{
+            res.status(200).send({articles})
+        })
+        .catch((err)=>{
+            next(err);
+        });
     }
 
-    fetchArticles()
-    .then((articles)=>{
-        res.status(200).send({articles})
-    })
-    .catch((err)=>{
-        next(err);
-    });
 }
-
 
 module.exports = {getArticleByID, getArticles};

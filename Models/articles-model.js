@@ -16,20 +16,47 @@ function fetchArticleByID(article_id){
     })
 }
 
-function fetchArticles(){
-    let query = `
-    SELECT articles.author, articles.title, articles.article_id, articles.topic, articles.created_at, articles.votes, articles.article_img_url, SUM(comments.article_id) AS comment_count 
+function fetchArticles(topic){
+
+    const queryValues = [];
+
+    let query = `SELECT articles.author, articles.title, articles.article_id, articles.topic, articles.created_at, articles.votes, articles.article_img_url, COUNT(comments.article_id)::int AS comment_count 
     FROM articles 
     LEFT JOIN comments 
-    ON articles.article_id = comments.article_id 
-    GROUP BY articles.author, articles.title, articles.article_id, articles.topic, articles.created_at, articles.votes, articles.article_img_url 
-    ORDER BY created_at DESC;
-    `;
+    ON articles.article_id = comments.article_id `;
 
-    return db.query(query).then(({rows}) => {
+    if (topic) {
+        queryValues.push(topic);
+        query += `WHERE articles.topic = $1 `;
+    } 
+
+    query += `GROUP BY articles.article_id `;
+
+    query += `ORDER BY created_at DESC;`;
+
+    return db.query(query, queryValues).then(({rows}) => {
+        if(rows[0] === undefined && topic){
+            return Promise.reject({status : 200, msg : "Topic does exist but there are no articles for it yet"})
+        }
         return rows;
     })
 }
 
+// return Promise.reject({status : 200, msg : "Topic does exist but there are no articles for it yet"})
 
-module.exports = {fetchArticleByID, fetchArticles};
+function fetchCommentsByID(article_id){
+    let query = "SELECT * FROM comments WHERE article_id = $1 ORDER BY created_at DESC;"
+
+    return db.query(query, [article_id]).then(({rows}) => {
+        if (rows[0] === undefined) {
+            return Promise.reject({
+                status: 200, 
+                msg : "Article does exist but has no comments"
+            })
+        } else {
+            return rows;
+        }
+    })
+}
+
+module.exports = {fetchArticleByID, fetchArticles, fetchCommentsByID};
