@@ -190,6 +190,83 @@ describe('GET /api/articles/:article_id', () => {
     
 });
 
+/** CORE: PATCH /api/articles/:article_id
+Description
+Should:
+be available on /api/articles/:article_id.
+update an article by article_id.
+
+Request body accepts:
+an object in the form { inc_votes: newVote }.
+newVote will indicate how much the votes property in the database should be updated by, e.g.
+{ inc_votes : 1 } would increment the current article's vote property by 1
+{ inc_votes : -100 } would decrement the current article's vote property by 100
+
+Responds with:
+the updated article
+Consider what errors could occur with this endpoint, and make sure to test for them.
+Remember to add a description of this endpoint to your /api endpoint. 
+*/
+
+describe.skip('PATCH /api/articles/:article_id', () => {
+  test('responds with the updated article', () => {
+    const articleUpdate = { inc_votes : 1 };
+
+    return request(app)
+    .patch("/api/articles/2")
+    .send(articleUpdate)
+    .expect(200)
+    .then((response)=>{
+      const updatedArticle = response.body;
+      expect(updatedArticle).toMatchObject({
+        article_id : 2,
+        title : "Sony Vaio; or, The Laptop",
+        topic : "mitch",
+        author : "icellusedkars",
+        body : "Call me Mitchell. Some years ago—never mind how long precisely—having little or no money in my purse, and nothing particular to interest me on shore, I thought I would buy a laptop about a little and see the codey part of the world. It is a way I have of driving off the spleen and regulating the circulation. Whenever I find myself growing grim about the mouth; whenever it is a damp, drizzly November in my soul; whenever I find myself involuntarily pausing before coffin warehouses, and bringing up the rear of every funeral I meet; and especially whenever my hypos get such an upper hand of me, that it requires a strong moral principle to prevent me from deliberately stepping into the street, and methodically knocking people’s hats off—then, I account it high time to get to coding as soon as I can. This is my substitute for pistol and ball. With a philosophical flourish Cato throws himself upon his sword; I quietly take to the laptop. There is nothing surprising in this. If they but knew it, almost all men in their degree, some time or other, cherish very nearly the same feelings towards the the Vaio with me.",
+        created_at : "2020-10-16T06:03:00",
+        votes : 0,
+        article_img_url : "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700"
+      })
+    })
+  });
+  test('sends an appropriate status and error message when given an invalid id', () => {
+    const articleUpdate = { inc_votes : 1 };
+
+    return request(app)
+    .patch("/api/articles/2")
+    .send(articleUpdate)
+    .expect(200)
+    .then((response) => {
+      expect(response.body.msg).toBe('Article does not exist');
+    });
+  });
+  test('sends an appropriate status and error when given an invalid article update (missing inc_votes)', () => {
+    const articleUpdate = {};
+
+    return request(app)
+    .patch("/api/articles/2")
+    .send(articleUpdate)
+    .expect(400)
+    .then((response)=>{
+      //Or PSQL error handler
+      expect(response.body.msg).toBe("Patch is missing inc_votes")
+    })
+  });
+  test('sends an appropriate status and error when given an invalid article update (inc_votes is the wrong data type)', () => {
+    const articleUpdate = { inc_votes : "1" };
+    // const articleUpdate2 = { inc_votes : "one" };
+    return request(app)
+    .patch("/api/articles/2")
+    .send(articleUpdate)
+    .expect(400)
+    .then((response)=>{
+      //PSQL error handler
+      expect(response.body.msg).toBe("")
+    })
+  });
+});
+
 describe('GET /api/articles/:article_id/comments', () => {
   test('Should respond with an array of comments for the given article_id of which each comment should have the following properties: comment_id, votes, created_at, author, body, article_id', () => {
     return request(app)
