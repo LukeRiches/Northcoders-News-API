@@ -1,8 +1,7 @@
-const {fetchArticleByID, fetchArticles} = require("../Models/articles-model");
+const {fetchArticleByID, fetchArticles, updateArticleVotes, getVotes} = require("../Models/articles-model");
 const { fetchTopic } = require("../Models/topics-model");
 
 function getArticleByID(req, res, next){
-    // console.log("in controller");
     const { article_id } = req.params;
 
     fetchArticleByID(article_id)
@@ -43,4 +42,30 @@ function getArticles(req, res, next){
 
 }
 
-module.exports = {getArticleByID, getArticles};
+function patchArticleVotes (req, res, next){
+    const {article_id} = req.params; 
+    const {inc_votes} = req.body
+
+    if(inc_votes === undefined){
+        return res.status(400).send({msg:"inc_votes is required"})
+    }
+
+    fetchArticleByID(article_id)
+    .then(()=>{
+        return getVotes(article_id)
+    })
+    .then((response)=>{
+        return response.votes
+    })
+    .then((current_votes)=>{
+        return updateArticleVotes(article_id, inc_votes, current_votes)
+    })
+    .then((article)=>{
+        res.status(200).send(article)
+    })
+    .catch((err)=>{
+        next(err);
+    });
+}
+
+module.exports = {getArticleByID, getArticles, patchArticleVotes};

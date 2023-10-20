@@ -108,3 +108,8 @@ You are now connected to database "nc_news_test" as user "LukeRiches".
  icellusedkars | Eight pug gifs that remind me of mitch                 |          3 | mitch | 2020-11-03 09:12:00 |     0 | https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700 |             2
 (13 rows)
 
+ votes 
+-------
+   100
+(1 row)
+

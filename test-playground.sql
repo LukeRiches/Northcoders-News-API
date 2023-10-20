@@ -53,4 +53,6 @@ ORDER BY created_at;
 -- INSERT INTO comments (body, article_id, author) VALUES ("abc", 1, "lurker") RETURNING *;
 
 
+-- Getting Votes
+SELECT votes FROM articles WHERE article_id = 1;
 

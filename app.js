@@ -1,7 +1,7 @@
 const express = require("express");
 const app = express();
 
-const {getTopics, getApi, getArticleByID, getArticles, getCommentsByID, postComment, getUsers, getUser} = require("./Controllers");
+const {getTopics, getApi, getArticleByID, getArticles, getCommentsByID, postComment, getUsers, getUser, patchArticleVotes} = require("./Controllers");
 
 app.use(express.json());
 
@@ -22,6 +22,8 @@ app.post("/api/articles/:article_id/comments", postComment)
 app.get("/api/users", getUsers)
 
 app.get("/api/users/:username", getUser)
+
+app.patch("/api/articles/:article_id", patchArticleVotes)
 
 //Path not found error
 app.use((req, res) => {
@@ -56,6 +58,15 @@ app.use((err, req, res, next) => {
     res.status(400).send({msg : 'Not null violation'});
   } else next(err);
 });
+
+app.use((err, req, res, next) => {
+  //psql user related error
+  if(err.code === '42703' ){
+    res.status(404).send({msg : 'column does not exist'});
+  } else next(err);
+});
+
+
 
 //Internal system error if no catches are made
 app.use((err, req, res, next) => {

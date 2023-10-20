@@ -42,21 +42,35 @@ function fetchArticles(topic){
     })
 }
 
-// return Promise.reject({status : 200, msg : "Topic does exist but there are no articles for it yet"})
+function updateArticleVotes (article_id, inc_count, current_votes){
 
-function fetchCommentsByID(article_id){
-    let query = "SELECT * FROM comments WHERE article_id = $1 ORDER BY created_at DESC;"
+    const newVotes = current_votes += inc_count;
 
-    return db.query(query, [article_id]).then(({rows}) => {
-        if (rows[0] === undefined) {
-            return Promise.reject({
-                status: 200, 
-                msg : "Article does exist but has no comments"
-            })
-        } else {
-            return rows;
-        }
+    return db.query(
+        `
+        UPDATE articles
+        SET votes = $1
+        WHERE article_id = $2
+        RETURNING * 
+        `,
+        [newVotes, article_id]
+    )
+    .then(({rows})=>{
+        return rows[0]
     })
 }
 
-module.exports = {fetchArticleByID, fetchArticles, fetchCommentsByID};
+function getVotes(article_id){
+    return db.query(
+        `
+        SELECT votes 
+        FROM articles 
+        WHERE article_id = $1;
+        `,
+        [article_id]
+    ).then(({rows})=>{
+        return rows[0]
+    })
+}
+
+module.exports = {fetchArticleByID, fetchArticles, updateArticleVotes, getVotes};
