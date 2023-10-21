@@ -190,8 +190,6 @@ describe('GET /api/articles/:article_id', () => {
     
 });
 
-
-
 describe('PATCH /api/articles/:article_id', () => {
   test('responds with the correct updated article 1', () => {
     const articleUpdate = { inc_votes : -100 };
@@ -411,6 +409,30 @@ describe('POST /api/articles/:article_id/comments', () => {
   });
 });
 
+describe('DELETE /api/comments/:comment_id', () => {
+  test('A successful request deletes the specified comment and sends no body back', () => {
+    return request(app)
+    .delete('/api/comments/1')
+    .expect(204);
+  });
+  test('Responds with an appropriate status and error message when given a non-existent id', () => {
+    return request(app)
+      .delete('/api/comments/999')
+      .expect(404)
+      .then((response) => {
+        expect(response.body.msg).toBe('Comment does not exist');
+      });
+  });
+  test('Responds with an appropriate status and error message when given an invalid id', () => {
+    return request(app)
+      .delete('/api/comments/not-a-comment')
+      .expect(400)
+      .then((response) => {
+        expect(response.body.msg).toBe('Invalid text representation');
+      });
+  });
+});
+
 describe('GET /api/users', () => {
   test('Should respond with a users array of users objects ', () => {
       return request(app)
@@ -490,4 +512,4 @@ describe("Making a request that doesn't exist yet", () => {
             expect(response.body.msg).toBe('Path not found');
           });
     });
-});
+}); 

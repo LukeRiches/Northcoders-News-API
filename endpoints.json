@@ -1,10 +1,10 @@
 {
   "GET /api": {
-    "description": "serves up a json representation of all the available endpoints of the api"
+    "description": "Serves up a json representation of all the available endpoints of the api"
   },
 
   "GET /api/topics": {
-    "description": "serves an array of all topics",
+    "description": "Serves an array of all topics",
     "queries": [],
     "exampleResponse": {
       "topics": [{ "slug": "football", "description": "Footie!" }]
@@ -12,46 +12,66 @@
   },
 
   "GET /api/articles": {
-    "description": "serves an array of all articles",
+    "description": "Serves an array of all articles",
     "queries": ["author", "topic", "sort_by", "order"],
     "exampleResponse": {
       "articles": [
         {
           "author": "weegembump",
           "title": "Seafood substitutions are increasing",
-          "article_id" : 1,
+          "article_id": 1,
           "topic": "cooking",
           "created_at": "2018-05-30T15:59:13.341Z",
           "votes": 0,
-          "article_img_url" : "article_img_url",
+          "article_img_url": "article_img_url",
           "comment_count": 6
         }
       ]
     }
   },
+
   "GET /api/articles/:article_id": {
-    "description": "serves an article object",
+    "description": "Serves an article object of the given article id",
     "queries": [],
     "exampleResponse": {
       "article": [
         {
-          "author" : "author_name",
-          "title" : "article_title",
-          "article_id" : 1,
-          "body" : "Text from the article..",
-          "topic" : "topic_name",
-          "created_at" : "2020-07-09 21:11:00",
-          "votes" : 0,
-          "article_img_url" : "article_img_url"
+          "author": "author_name",
+          "title": "article_title",
+          "article_id": 1,
+          "body": "Text from the article..",
+          "topic": "topic_name",
+          "created_at": "2020-07-09 21:11:00",
+          "votes": 0,
+          "article_img_url": "article_img_url"
         }
       ]
     }
   },
-  "GET /api/articles/:article_id/comments":{
+
+  "PATCH /api/articles/:article_id": {
+    "description": "Updates the votes on an article",
+    "queries": [],
+    "format": {
+      "inc_votes": -100
+    },
+    "exampleResponse": {
+      "article_id": 1,
+      "title": "Living in the shadow of a great man",
+      "topic": "mitch",
+      "author": "butter_bridge",
+      "body": "I find this existence challenging",
+      "created_at": "2020-07-09T20:11:00.000Z",
+      "votes": 0,
+      "article_img_url": "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700"
+    }
+  },
+
+  "GET /api/articles/:article_id/comments": {
     "description": "serves all the comments associated with an article_id",
     "queries": [],
     "exampleResponse": {
-      "comments":[
+      "comments": [
         {
           "comment_id": 1,
           "body": "Text from comment...",
@@ -63,40 +83,66 @@
       ]
     }
   },
-  "POST /api/articles/:article_id/comments":{
+
+  "POST /api/articles/:article_id/comments": {
     "description": "Creates a comment to the given article",
     "queries": [],
     "format": {
-      "username" : "Must-be-an-existing-username",
-      "body" : "body..."
+      "username": "Must-be-an-existing-username",
+      "body": "body..."
     },
     "exampleResponse": {
       "comment": {
-        "comment_id" : 19,
-        "body" : "body...",
-        "article_id" : 1,
-        "author" : "existing-username",
-        "votes" : 0,
+        "comment_id": 19,
+        "body": "body...",
+        "article_id": 1,
+        "author": "existing-username",
+        "votes": 0,
         "created_at": "2023-10-06T09:55:37.094Z"
       }
     }
   },
-  "PATCH /api/articles/:article_id":{
-    "description": "Updates the votes on an article",
+
+  "DELETE /api/comments/:comment_id": {
+    "description": "Deletes a comment based on the given comment_id",
     "queries": [],
-    "format": {
-      "inc_votes" : -100 
-    },
-    "exampleResponse":{
-      "article_id": 1,
-      "title": "Living in the shadow of a great man",
-      "topic": "mitch",
-      "author": "butter_bridge",
-      "body": "I find this existence challenging",
-      "created_at": "2020-07-09T20:11:00.000Z",
-      "votes": 0,
-      "article_img_url": "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700"
+    "exampleResponse": {
+      "topics": [{ "slug": "football", "description": "Footie!" }]
+    }
+  },
+
+  "GET /api/users": {
+    "description": "Serves an array of all user objects",
+    "queries": [],
+    "exampleResponse": {
+      "users": [
+        {
+          "username": "butter_bridge",
+          "name": "jonny",
+          "avatar_url": "https://www.healthytherapies.com/wp-content/uploads/2016/06/Lime3.jpg"
+        },
+        {
+          "username": "lurker",
+          "name": "do_nothing",
+          "avatar_url": "https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png"
+        }
+      ]
+    }
+  },
+
+  "GET /api/users/:username": {
+    "description": "Serves an array of the given user object",
+    "queries": [],
+    "exampleResponse": {
+      "user": [
+        {
+          "username": "lurker",
+          "name": "do_nothing",
+          "avatar_url": "https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png"
+        }
+      ]
     }
   }
-}
 
+  
+}
