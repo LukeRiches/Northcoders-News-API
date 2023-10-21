@@ -160,7 +160,6 @@ describe('GET /api/articles/:article_id', () => {
           .expect(200)
           .then((response) => {
             const article = response.body;
-
             expect(article).toHaveProperty("author", "butter_bridge");
             expect(article).toHaveProperty("title", 'Living in the shadow of a great man');
             expect(article).toHaveProperty("article_id", 1);
@@ -169,6 +168,7 @@ describe('GET /api/articles/:article_id', () => {
             expect(article).toHaveProperty("created_at");
             expect(article).toHaveProperty("votes", 100);
             expect(article).toHaveProperty("article_img_url", "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700");
+            expect(article).toHaveProperty("comment_count", '11')
           });
       });
     test('sends an appropriate status and error message when given a valid but non-existent id', () => {

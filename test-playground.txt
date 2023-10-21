@@ -6,15 +6,6 @@ You are now connected to database "nc_news_test" as user "LukeRiches".
  paper | what books are made of
 (3 rows)
 
- slug  |      description       
--------+------------------------
- paper | what books are made of
-(1 row)
-
- slug | description 
-------+-------------
-(0 rows)
-
    username    |    name    |                                avatar_url                                 
 ---------------+------------+---------------------------------------------------------------------------
  butter_bridge | jonny      | https://www.healthytherapies.com/wp-content/uploads/2016/06/Lime3.jpg
@@ -39,11 +30,6 @@ You are now connected to database "nc_news_test" as user "LukeRiches".
          12 | Moustache                                              | mitch | butter_bridge | Have you seen the size of that thing?                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               | 2020-10-11 12:24:00 |     0 | https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700
          13 | Another article about Mitch                            | mitch | butter_bridge | There will never be enough articles about Mitch!                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    | 2020-10-11 12:24:00 |     0 | https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700
 (13 rows)
-
- article_id |                title                | topic |    author     |               body                |     created_at      | votes |                                            article_img_url                                            
-------------+-------------------------------------+-------+---------------+-----------------------------------+---------------------+-------+-------------------------------------------------------------------------------------------------------
-          1 | Living in the shadow of a great man | mitch | butter_bridge | I find this existence challenging | 2020-07-09 21:11:00 |   100 | https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700
-(1 row)
 
  comment_id |                                                                                         body                                                                                         | article_id |    author     | votes |     created_at      
 ------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+------------+---------------+-------+---------------------
@@ -107,6 +93,16 @@ You are now connected to database "nc_news_test" as user "LukeRiches".
  icellusedkars | A                                                      |          6 | mitch | 2020-10-18 02:00:00 |     0 | https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700 |             1
  icellusedkars | Eight pug gifs that remind me of mitch                 |          3 | mitch | 2020-11-03 09:12:00 |     0 | https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700 |             2
 (13 rows)
+
+    author     |                title                | article_id | topic |     created_at      | votes |                                            article_img_url                                            | comment_count 
+---------------+-------------------------------------+------------+-------+---------------------+-------+-------------------------------------------------------------------------------------------------------+---------------
+ butter_bridge | Living in the shadow of a great man |          1 | mitch | 2020-07-09 21:11:00 |   100 | https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700 |            11
+(1 row)
+
+ article_id |                title                | topic |    author     |               body                |     created_at      | votes |                                            article_img_url                                            
+------------+-------------------------------------+-------+---------------+-----------------------------------+---------------------+-------+-------------------------------------------------------------------------------------------------------
+          1 | Living in the shadow of a great man | mitch | butter_bridge | I find this existence challenging | 2020-07-09 21:11:00 |   100 | https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700
+(1 row)
 
  votes 
 -------

@@ -2,9 +2,9 @@
 -- topics
 SELECT * FROM topics;
 
-SELECT * FROM topics WHERE slug = 'paper';
+-- SELECT * FROM topics WHERE slug = 'paper';
 
-SELECT * FROM topics WHERE slug = 'non-existent';
+-- SELECT * FROM topics WHERE slug = 'non-existent';
 
 --users
 SELECT * FROM users;
@@ -13,7 +13,7 @@ SELECT * FROM users;
 SELECT * FROM articles;
 
 --article by id
-SELECT * FROM articles WHERE article_id = 1;
+-- SELECT * FROM articles WHERE article_id = 1;
 
 --comments
 SELECT * FROM comments;
@@ -33,6 +33,19 @@ LEFT JOIN comments
 ON articles.article_id = comments.article_id 
 GROUP BY articles.article_id
 ORDER BY created_at;
+
+--article with comment count
+SELECT articles.author, articles.title, articles.article_id, articles.topic, articles.created_at, articles.votes, articles.article_img_url, COUNT(comments.article_id) AS comment_count 
+FROM articles 
+LEFT JOIN comments 
+ON articles.article_id = comments.article_id 
+WHERE articles.article_id = 1
+GROUP BY articles.article_id
+ORDER BY created_at;
+
+SELECT * 
+FROM articles 
+WHERE articles.article_id = 1;
 
 -- test query
 -- SELECT articles.author, articles.title, articles.article_id, articles.topic, articles.created_at, articles.votes, articles.article_img_url, COUNT(comments.article_id) AS comment_count 
