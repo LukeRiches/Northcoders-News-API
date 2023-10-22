@@ -27,6 +27,44 @@ function insertComment ({ username, body}, article_id){
       });
 };
 
+function updateCommentVotes (comment_id, inc_count, current_votes){
+
+  const newVotes = current_votes += inc_count;
+
+  return db.query(
+      `
+      UPDATE comments
+      SET votes = $1
+      WHERE comment_id = $2
+      RETURNING * 
+      `,
+      [newVotes, comment_id]
+  )
+  .then(({rows})=>{
+      return rows[0]
+  })
+}
+
+function getVotes(comment_id){
+  return db.query(
+      `
+      SELECT votes 
+      FROM comments 
+      WHERE comment_id = $1;
+      `,
+      [comment_id]
+  ).then(({rows})=>{
+    if (rows[0] === undefined) {
+      return Promise.reject({
+          status: 404, 
+          msg : "Comment does not exist"
+      })
+    } else {
+      return rows[0]
+    }
+  })
+}
+
 function removeCommentById(comment_id){
     return db.query('DELETE FROM comments WHERE comment_id = $1 RETURNING *;', [comment_id])
     .then((result)=>{
@@ -39,4 +77,4 @@ function removeCommentById(comment_id){
     })
 }
 
-module.exports = {fetchCommentsByID, insertComment, removeCommentById};
+module.exports = {fetchCommentsByID, insertComment, removeCommentById, getVotes, updateCommentVotes};

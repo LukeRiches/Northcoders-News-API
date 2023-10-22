@@ -153,6 +153,100 @@ describe('GET /api/articles?topic', () => {
   })
 });
 
+describe('GET /api/articles?sort_by=&order=', () => {
+  test('Should respond with an articles array of article objects, when no sort_by or order query is given it defaults sort_by to the created_at date and order defaults to descending', () => {
+    return request(app)
+    .get("/api/articles")
+    .expect(200)
+    .then((res) => {
+        const articles = res.body.articles;
+        expect(articles).toHaveLength(13);
+
+        articles.forEach((article) => {
+            expect(article).toHaveProperty("author");
+            expect(article).toHaveProperty("title");
+            expect(article).toHaveProperty("article_id");
+            expect(article).toHaveProperty("topic");
+            expect(article).toHaveProperty("created_at");
+            expect(article).toHaveProperty("votes");
+            expect(article).toHaveProperty("article_img_url");
+            expect(article).toHaveProperty("comment_count");
+        })
+        expect(articles).toBeSortedBy('created_at', {descending: true})
+    });
+  });
+  test('Should not be a body property present on any of the article objects.', () => {
+    return request(app)
+    .get("/api/articles")
+    .expect(200)
+    .then((res) => {
+        const articles = res.body.articles;
+        articles.forEach((article) => {
+            expect(article).not.toHaveProperty("body");
+        })
+    })
+  });
+  test('When given a sort_by but no order query, the articles array should be sorted by that sort_by in descending order ', () => {
+    return request(app)
+    .get("/api/articles?sort_by=title")
+    .expect(200)
+    .then((res) => {
+        const articles = res.body.articles;
+        expect(articles).toHaveLength(13);
+
+        articles.forEach((article) => {
+            expect(article).toHaveProperty("author");
+            expect(article).toHaveProperty("title");
+            expect(article).toHaveProperty("article_id");
+            expect(article).toHaveProperty("topic");
+            expect(article).toHaveProperty("created_at");
+            expect(article).toHaveProperty("votes");
+            expect(article).toHaveProperty("article_img_url");
+            expect(article).toHaveProperty("comment_count");
+        })
+        expect(articles).toBeSortedBy('title', {descending: true})
+    });
+  });
+  test('When given a sort_by and an ascending order query, the articles array should be sorted by that sort_by in ascending order ', () => {
+    return request(app)
+    .get("/api/articles?sort_by=title&order=asc")
+    .expect(200)
+    .then((res) => {
+        const articles = res.body.articles;
+        expect(articles).toHaveLength(13);
+
+        articles.forEach((article) => {
+            expect(article).toHaveProperty("author");
+            expect(article).toHaveProperty("title");
+            expect(article).toHaveProperty("article_id");
+            expect(article).toHaveProperty("topic");
+            expect(article).toHaveProperty("created_at");
+            expect(article).toHaveProperty("votes");
+            expect(article).toHaveProperty("article_img_url");
+            expect(article).toHaveProperty("comment_count");
+        })
+        expect(articles).toBeSortedBy('title', {descending: false})
+    });
+  });
+  test("when given an invalid sort_by query, sends an appropriate error and error message", () => {
+    return request(app)
+      .get('/api/articles?sort_by=not_a_valid_query')
+      .expect(400)
+      .then((response) => {
+        expect(response.body.msg).toBe('Invalid sort_by query');
+    });
+  })
+  test("when given an invalid order query, sends an appropriate error and error message", () => {
+    return request(app)
+      .get('/api/articles?sort_by=title&order=bananas')
+      .expect(400)
+      .then((response) => {
+        expect(response.body.msg).toBe('Invalid order query');
+    });
+  })
+});
+
+
 describe('GET /api/articles/:article_id', () => {
     test('should respond with a single article object', () => {
         return request(app)
@@ -236,7 +330,6 @@ describe('PATCH /api/articles/:article_id', () => {
       expect(updatedArticle).toHaveProperty("created_at")
     })
   });
-  //Question on testing created_at
   test('sends an appropriate status and error message when given an invalid id', () => {
     const articleUpdate = { inc_votes : 1 };
 
@@ -260,10 +353,8 @@ describe('PATCH /api/articles/:article_id', () => {
       expect(response.body.msg).toBe("inc_votes is required")
     })
   });
-  //Is it better to throw the pswl error Invalid text representation or my custom error to be more specific here ^
   test('sends an appropriate status and error when given an invalid article update (inc_votes is the wrong data type)', () => {
     const articleUpdate = { inc_votes : ["Hello"]};
-    // const articleUpdate2 = { inc_votes : "one" };
     return request(app)
     .patch("/api/articles/2")
     .send(articleUpdate)
@@ -409,6 +500,106 @@ describe('POST /api/articles/:article_id/comments', () => {
   });
 });
 
+/*ADVANCED: PATCH /api/comments/:comment_id
+Description
+Should:
+be available on /api/comments/:comment_id.
+update the votes on a comment given the comment's comment_id.
+
+Request body accepts:
+an object in the form { inc_votes: newVote }:
+
+newVote will indicate how much the votes property in the database should be updated by, e.g.
+
+{ inc_votes : 1 } would increment the current comment's vote property by 1
+
+{ inc_votes : -1 } would decrement the current comment's vote property by 1
+
+Responds with:
+the updated comment.
+
+Consider what errors could occur with this endpoint, and make sure to test for them.
+
+Remember to add a description of this endpoint to your /api endpoint. 
+*/
+
+describe('PATCH /api/comments/:comment_id', () => {
+  test('responds with the correct updated comment 1', () => {
+    const commentUpdate = { inc_votes : -100 };
+
+    return request(app)
+    .patch("/api/comments/3")
+    .send(commentUpdate)
+    .expect(200)
+    .then((response)=>{
+      const updatedComment = response.body;
+      expect(updatedComment).toMatchObject({
+        comment_id : 3,
+        body : "Replacing the quiet elegance of the dark suit and tie with the casual indifference of these muted earth tones is a form of fashion suicide, but, uh, call me crazy — onyou it works.",
+        article_id: 1,
+        author : "icellusedkars",
+        votes : 0
+      })
+      expect(updatedComment).toHaveProperty("created_at")
+    })
+    
+  });
+  test('responds with the correct updated comment 2', () => {
+    const commentUpdate = { inc_votes : 1 };
+
+    return request(app)
+    .patch("/api/comments/4")
+    .send(commentUpdate)
+    .expect(200)
+    .then((response)=>{
+      const updatedComment = response.body;
+      expect(updatedComment).toMatchObject({
+        comment_id : 4,
+        body : " I carry a log — yes. Is it funny to you? It is not to me.",
+        article_id: 1,
+        author : "icellusedkars",
+        votes : -99
+      })
+      expect(updatedComment).toHaveProperty("created_at")
+    })
+  });
+  test('sends an appropriate status and error message when given an invalid id', () => {
+    const commentUpdate = { inc_votes : 1 };
+
+    return request(app)
+    .patch("/api/comments/100")
+    .send(commentUpdate)
+    .expect(404)
+    .then((response) => {
+      expect(response.body.msg).toBe('Comment does not exist');
+    });
+  });
+  test('sends an appropriate status and error when given an invalid comment update (missing inc_votes)', () => {
+    const commentUpdate = {};
+
+    return request(app)
+    .patch("/api/comments/2")
+    .send(commentUpdate)
+    .expect(400)
+    .then((response)=>{
+      //Or PSQL error handler
+      expect(response.body.msg).toBe("inc_votes is required")
+    })
+  });
+  test('sends an appropriate status and error when given an invalid comment update (inc_votes is the wrong data type)', () => {
+    const commentUpdate = { inc_votes : ["Hello"]};
+    return request(app)
+    .patch("/api/comments/2")
+    .send(commentUpdate)
+    .expect(400)
+    .then((response)=>{
+      //PSQL error handler
+      expect(response.body.msg).toBe("Invalid text representation")
+    })
+  });
+});
+
+
 describe('DELETE /api/comments/:comment_id', () => {
   test('A successful request deletes the specified comment and sends no body back', () => {
     return request(app)
@@ -483,7 +674,7 @@ describe('GET /api/users/:username', () => {
           expect(user).toHaveProperty("avatar_url", "https://www.healthytherapies.com/wp-content/uploads/2016/06/Lime3.jpg");
         });
   });
-  test('sends an appropriate status and error message when given a valid but non-existent username', () => {
+  test('sends an appropriate status and error message when given a valid but non-existent username 1', () => {
       return request(app)
         .get('/api/users/test')
         .expect(404)
@@ -491,6 +682,14 @@ describe('GET /api/users/:username', () => {
           expect(response.body.msg).toBe('User does not exist');
         });
   });
+  test('sends an appropriate status and error message when given a valid but non-existent username 2', () => {
+    return request(app)
+      .get('/api/users/1234')
+      .expect(404)
+      .then((response) => {
+        expect(response.body.msg).toBe('User does not exist');
+      });
+});
 })
 
 //General Errors

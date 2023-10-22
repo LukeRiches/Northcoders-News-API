@@ -66,6 +66,9 @@ WHERE articles.article_id = 1;
 -- INSERT INTO comments (body, article_id, author) VALUES ("abc", 1, "lurker") RETURNING *;
 
 
--- Getting Votes
+-- Getting current votes from article
 SELECT votes FROM articles WHERE article_id = 1;
+
+-- Getting current votes from comment
+SELECT votes FROM comments WHERE comment_id = 3;
 

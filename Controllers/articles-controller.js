@@ -17,12 +17,12 @@ function getArticles(req, res, next){
 
     const query = req.query
 
-    const {topic} = req.query
+    const {topic, sort_by, order} = req.query
 
     if(topic){
         fetchTopic(topic)
         .then(()=>{
-            return fetchArticles(topic)
+            return fetchArticles(topic, sort_by, order)
         })
         .then((articles)=>{
             res.status(200).send({articles})
@@ -31,7 +31,7 @@ function getArticles(req, res, next){
             next(err);
         });
     } else {
-        fetchArticles(topic)
+        fetchArticles(topic, sort_by, order)
         .then((articles)=>{
             res.status(200).send({articles})
         })
