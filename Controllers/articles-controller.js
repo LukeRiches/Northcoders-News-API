@@ -1,4 +1,4 @@
-const {fetchArticleByID, fetchArticles, updateArticleVotes, getVotes} = require("../Models/articles-model");
+const {fetchArticleByID, fetchArticles, updateArticleVotes, getVotes, insertArticle, fetchArticlesPagination} = require("../Models/articles-model");
 const { fetchTopic } = require("../Models/topics-model");
 
 function getArticleByID(req, res, next){
@@ -17,25 +17,31 @@ function getArticles(req, res, next){
 
     const query = req.query
 
-    const {topic, sort_by, order} = req.query
+    const {topic, sort_by, order, limit, p} = req.query
+
+    // console.log(query);
 
     if(topic){
         fetchTopic(topic)
         .then(()=>{
-            return fetchArticles(topic, sort_by, order)
+            return fetchArticlesPagination(topic, sort_by, order, limit, p)
         })
         .then((articles)=>{
-            res.status(200).send({articles})
+            console.log(articles);
+            res.status(200).send(articles)
         })
         .catch((err)=>{
             next(err);
         });
     } else {
-        fetchArticles(topic, sort_by, order)
+        fetchArticlesPagination(topic, sort_by, order, limit, p)
         .then((articles)=>{
-            res.status(200).send({articles})
+            // console.log("Here");
+            console.log(articles);
+            res.status(200).send(articles)
         })
         .catch((err)=>{
+            console.log(err);
             next(err);
         });
     }
@@ -68,4 +74,20 @@ function patchArticleVotes (req, res, next){
     });
 }
 
-module.exports = {getArticleByID, getArticles, patchArticleVotes};
+function postArticle(req, res, next){
+    const newArticle = req.body;
+
+    if(Array.isArray(newArticle) || newArticle === null){
+        return res.status(400).send({msg:"Invalid request body"})
+    }
+
+    insertArticle(newArticle)
+    .then((article) => {
+        res.status(201).send({article})
+    })
+    .catch((err)=>{
+        next(err);
+    });
+}
+
+module.exports = {getArticleByID, getArticles, patchArticleVotes, postArticle};

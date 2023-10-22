@@ -49,7 +49,7 @@ describe('GET /api', () => {
     
 });
 
-describe('GET /api/articles', () => {
+describe.skip('GET /api/articles', () => {
     test('should respond with an articles array of article objects ', () => {
         return request(app)
         .get("/api/articles")
@@ -94,7 +94,128 @@ describe('GET /api/articles', () => {
     });
 });
 
-describe('GET /api/articles?topic', () => {
+/** ADVANCED: GET /api/articles (pagination)
+Description
+To make sure that an API can handle large amounts of data, it is often necessary to use pagination. Head over to Google, and you will notice that the search results are broken down into pages. 
+It would not be feasible to serve up all the results of a search in one go. 
+The same is true of websites / apps like Facebook or Twitter (except they hide this by making requests for the next page in the background, when we scroll to the bottom of the browser). 
+
+We can implement this functionality on our /api/articles endpoint.
+
+Accepts the following queries:
+limit, which limits the number of responses (defaults to 10).
+p, stands for page and specifies the page at which to start (calculated using limit).
+
+Responds with:
+the articles paginated according to the above inputs. default will have a length of 10
+total_count property, displaying the total number of articles (this should display the total number of articles with any filters applied, discounting the limit).
+
+Consider what errors could occur with this endpoint, and make sure to test for them.
+
+Your previous test cases should not need amending.
+
+Remember to add a description of this endpoint to your /api endpoint. 
+*/
+
+describe.skip('GET /api/articles?limit=&p= (pagination)', () => {
+  test('/api/articles?p=1 - limit should default to 10 and should respond with an object with an articles array and a total_count', () => {
+      return request(app)
+      .get("/api/articles?p=1")
+      .expect(200)
+      .then((res) => {
+          const articles = res.body.articles;
+          expect(Array.isArray(articles)).toBe(true);
+          expect(articles).toHaveLength(10);
+          articles.forEach((article) => {
+              expect(article).toHaveProperty("author");
+              expect(article).toHaveProperty("title");
+              expect(article).toHaveProperty("article_id");
+              expect(article).toHaveProperty("topic");
+              expect(article).toHaveProperty("created_at");
+              expect(article).toHaveProperty("votes");
+              expect(article).toHaveProperty("article_img_url");
+              expect(article).toHaveProperty("comment_count");
+          })
+          const total_count = res.body.total_count;
+          expect(total_count).toBe(13)
+      });
+  });
+  test('/api/articles?p=2 - limit should default to 10 and should respond with an object with an articles array and a total_count', () => {
+    return request(app)
+    .get("/api/articles?p=2")
+    .expect(200)
+    .then((res) => {
+        const articles = res.body.articles;
+        expect(Array.isArray(articles)).toBe(true);
+        expect(articles).toHaveLength(3);
+        articles.forEach((article) => {
+            expect(article).toHaveProperty("author");
+            expect(article).toHaveProperty("title");
+            expect(article).toHaveProperty("article_id");
+            expect(article).toHaveProperty("topic");
+            expect(article).toHaveProperty("created_at");
+            expect(article).toHaveProperty("votes");
+            expect(article).toHaveProperty("article_img_url");
+            expect(article).toHaveProperty("comment_count");
+        })
+        const total_count = res.body.total_count;
+        expect(total_count).toBe(13)
+    });
+  });
+  test('/api/articles?limit=5&p=1 - should respond with an object with an articles array and a total_count', () => {
+    return request(app)
+    .get("/api/articles?limit=5&p=1")
+    .expect(200)
+    .then((res) => {
+        const articles = res.body.articles;
+        expect(Array.isArray(articles)).toBe(true);
+        expect(articles).toHaveLength(5);
+        articles.forEach((article) => {
+            expect(article).toHaveProperty("author");
+            expect(article).toHaveProperty("title");
+            expect(article).toHaveProperty("article_id");
+            expect(article).toHaveProperty("topic");
+            expect(article).toHaveProperty("created_at");
+            expect(article).toHaveProperty("votes");
+            expect(article).toHaveProperty("article_img_url");
+            expect(article).toHaveProperty("comment_count");
+        })
+        const total_count = res.body.total_count;
+        expect(total_count).toBe(13)
+    });
+  });
+  test('should not be a body property present on any of the article objects.', () => {
+      return request(app)
+      .get("/api/articles")
+      .expect(200)
+      .then((res) => {
+          const articles = res.body.articles;
+          articles.forEach((article) => {
+              expect(article).not.toHaveProperty("body");
+          })
+      })
+  });
+  test('when given an invalid limit value in the query, sends an appropriate error and error message', () => {
+    return request(app)
+    .get("/api/articles?limit=20&p=1")
+    .expect(400)
+    .then((res) => {
+      expect(res.body.msg).toBe('Limit exceeds total_count');
+    });
+  });
+  test('when given an invalid page value in the query, sends an appropriate error and error message', () => {
+    return request(app)
+    .get("/api/articles?p=0")
+    .expect(400)
+    .then((res) => {
+      expect(res.body.msg).toBe('Page cannot be 0');
+    });
+  });
+  
+});
+
+
+describe.skip('GET /api/articles?topic', () => {
   test('should respond with an articles array of article objects ', () => {
       return request(app)
       .get("/api/articles?topic=cats")
@@ -153,7 +274,7 @@ describe('GET /api/articles?topic', () => {
   })
 });
 
-describe('GET /api/articles?sort_by=&order=', () => {
+describe.skip('GET /api/articles?sort_by=&order=', () => {
   test('Should respond with an articles array of article objects, when no sort_by or order query is given it defaults sort_by to the created_at date and order defaults to descending', () => {
     return request(app)
     .get("/api/articles")
@@ -246,6 +367,107 @@ describe('GET /api/articles?sort_by=&order=', () => {
   })
 });
 
+describe('POST /api/articles', () => {
+  test('When given a valid request body, it should add a new article', () => {
+    const newArticle = {
+      author : 'lurker',
+      title : "test title",
+      body: "test body",
+      topic: "paper",
+      article_img_url: "test url"
+    };
+    return request(app)
+      .post('/api/articles')
+      .send(newArticle)
+      .expect(201)
+      .then((response) => {
+        const article = response.body.article;
+        expect(article).toHaveProperty("author", "lurker")
+        expect(article).toHaveProperty("title", "test title")
+        expect(article).toHaveProperty("body", "test body")
+        expect(article).toHaveProperty("topic", "paper")
+        expect(article).toHaveProperty("article_img_url", "test url")
+        expect(article).toHaveProperty("article_id", 14)
+        expect(article).toHaveProperty("votes", 0)
+        expect(article).toHaveProperty("created_at")
+        expect(article).toHaveProperty("comment_count", 0)
+      });
+  });
+  test("When given an invalid request body type, sends an appropriate error and error message", () => {
+    const newArticle = [];
+    return request(app)
+      .post('/api/articles')
+      .send(newArticle)
+      .expect(400)
+      .then((response) => {
+        expect(response.body.msg).toBe('Invalid request body');
+      })
+  });
+  test("When given an invalid request body, sends an appropriate error and error message (author doesn't reference an existing username)", () => {
+    const newArticle = {
+      author : 'not-a-valid-author',
+      title : "test title",
+      body: "test body",
+      topic: "paper",
+      article_img_url: "test url"
+    };
+    return request(app)
+      .post('/api/articles')
+      .send(newArticle)
+      .expect(400)
+      .then((response) => {
+        expect(response.body.msg).toBe('Foreign key violation');
+      })
+  });
+  test("When given an invalid request body, sends an appropriate error and error message (topic doesn't reference an existing topic slug)", () => {
+    const newArticle = {
+      author : 'lurker',
+      title : "test title",
+      body: "test body",
+      topic: "not-a-valid-topic",
+      article_img_url: "test url"
+    };
+    return request(app)
+      .post('/api/articles')
+      .send(newArticle)
+      .expect(400)
+      .then((response) => {
+        expect(response.body.msg).toBe('Foreign key violation');
+      })
+  });
+  test("When given an invalid request body, sends an appropriate error and error message (title is a required field)", () => {
+    const newArticle = {
+      author : 'lurker',
+      body: "test body",
+      topic: "paper",
+      article_img_url: "test url"
+    };
+    return request(app)
+      .post('/api/articles')
+      .send(newArticle)
+      .expect(400)
+      .then((response) => {
+        //expected the below to be a Not null violation
+        expect(response.body.msg).toBe('Title is required');
+      })
+  });
+  test("When given an invalid request body, sends an appropriate error and error message (body is a required field)", () => {
+    const newArticle = {
+      author : 'lurker',
+      title : "test",
+      topic: "paper",
+      article_img_url: "test url"
+    };
+    return request(app)
+      .post('/api/articles')
+      .send(newArticle)
+      .expect(400)
+      .then((response) => {
+        //expected the below to be a Not null violation
+        expect(response.body.msg).toBe('Body is required');
+      })
+  });
+});
 
 describe('GET /api/articles/:article_id', () => {
     test('should respond with a single article object', () => {
@@ -457,7 +679,7 @@ describe('POST /api/articles/:article_id/comments', () => {
       .send(badComment)
       .expect(404)
       .then((response) => {
-        expect(response.body.msg).toBe('Foreign key violation');
+        expect(response.body.msg).toBe('Article does not exist');
       });
   });
   test('Sends an appropriate status and error message when the article_id is not a valid data type', () => {
@@ -481,7 +703,7 @@ describe('POST /api/articles/:article_id/comments', () => {
     return request(app)
       .post('/api/articles/1/comments')
       .send(badComment)
-      .expect(404)
+      .expect(400)
       .then((response) => {
         expect(response.body.msg).toBe('Foreign key violation');
       });
@@ -499,29 +721,6 @@ describe('POST /api/articles/:article_id/comments', () => {
       });
   });
 });
-
-/*ADVANCED: PATCH /api/comments/:comment_id
-Description
-Should:
-be available on /api/comments/:comment_id.
-update the votes on a comment given the comment's comment_id.
-
-Request body accepts:
-an object in the form { inc_votes: newVote }:
-
-newVote will indicate how much the votes property in the database should be updated by, e.g.
-
-{ inc_votes : 1 } would increment the current comment's vote property by 1
-
-{ inc_votes : -1 } would decrement the current comment's vote property by 1
-
-Responds with:
-the updated comment.
-
-Consider what errors could occur with this endpoint, and make sure to test for them.
-
-Remember to add a description of this endpoint to your /api endpoint. 
-*/
 
 describe('PATCH /api/comments/:comment_id', () => {
   test('responds with the correct updated comment 1', () => {

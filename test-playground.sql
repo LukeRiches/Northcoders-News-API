@@ -27,7 +27,7 @@ FROM comments
 GROUP BY article_id;
 
 --articles with comment count
-SELECT articles.author, articles.title, articles.article_id, articles.topic, articles.created_at, articles.votes, articles.article_img_url, COUNT(comments.article_id) AS comment_count 
+SELECT articles.article_id, articles.title, articles.topic, articles.author, articles.created_at, articles.votes, articles.article_img_url, COUNT(comments.article_id) AS comment_count 
 FROM articles 
 LEFT JOIN comments 
 ON articles.article_id = comments.article_id 
@@ -43,9 +43,9 @@ WHERE articles.article_id = 1
 GROUP BY articles.article_id
 ORDER BY created_at;
 
-SELECT * 
-FROM articles 
-WHERE articles.article_id = 1;
+-- SELECT * 
+-- FROM articles 
+-- WHERE articles.article_id = 1;
 
 -- test query
 -- SELECT articles.author, articles.title, articles.article_id, articles.topic, articles.created_at, articles.votes, articles.article_img_url, COUNT(comments.article_id) AS comment_count 
@@ -72,3 +72,12 @@ SELECT votes FROM articles WHERE article_id = 1;
 -- Getting current votes from comment
 SELECT votes FROM comments WHERE comment_id = 3;
 
+-- pagination
+SELECT articles.article_id, articles.title, articles.topic, articles.author, articles.created_at, articles.votes, articles.article_img_url, COUNT(comments.article_id) AS comment_count 
+FROM articles 
+LEFT JOIN comments 
+ON articles.article_id = comments.article_id 
+GROUP BY articles.article_id
+ORDER BY article_id
+OFFSET 5 ROWS
+FETCH NEXT 5 ROWS ONLY
