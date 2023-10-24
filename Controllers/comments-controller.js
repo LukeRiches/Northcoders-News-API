@@ -21,7 +21,10 @@ function postComment(req, res, next){
     const username = newComment.username;
     const {article_id} = req.params;
 
-    insertComment(newComment, article_id)
+    fetchArticleByID(article_id)
+    .then(()=>{
+        return insertComment(newComment, article_id)
+    })
     .then((comment) => {
         res.status(201).send({comment})
     })

@@ -2,7 +2,7 @@ const cors = require('cors');
 const express = require("express");
 const app = express();
 
-const {getTopics, getApi, getArticleByID, getArticles, getCommentsByID, postComment, getUsers, getUser, patchArticleVotes, deleteComment, patchCommentVotes} = require("./Controllers");
+const {getTopics, getApi, getArticleByID, getArticles, getCommentsByID, postComment, getUsers, getUser, patchArticleVotes, deleteComment, patchCommentVotes, postArticle} = require("./Controllers");
 
 app.use(cors());
 
@@ -15,6 +15,8 @@ app.get("/api", getApi);
 app.get("/api/topics", getTopics);
 
 app.get("/api/articles", getArticles)
+
+app.post("/api/articles", postArticle)
 
 app.get("/api/articles/:article_id", getArticleByID)
 
@@ -55,7 +57,7 @@ app.use((err, req, res, next) => {
 app.use((err, req, res, next) => {
   //psql user related error
   if(err.code === '23503' ){
-    res.status(404).send({msg : 'Foreign key violation'});
+    res.status(400).send({msg : 'Foreign key violation'});
   } else next(err);
 });
 
@@ -69,7 +71,7 @@ app.use((err, req, res, next) => {
 app.use((err, req, res, next) => {
   //psql user related error
   if(err.code === '42703' ){
-    res.status(404).send({msg : 'column does not exist'});
+    res.status(404).send({msg : 'Column does not exist'});
   } else next(err);
 });
 
