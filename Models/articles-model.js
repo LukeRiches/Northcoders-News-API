@@ -71,19 +71,19 @@ function fetchArticlesLength(topic, sort_by, order){
 
 function fetchArticles(topic, sort_by, order, limit, p,  queryLength){
 
-    if(sort_by === undefined){
+    if(sort_by === undefined || sort_by === ""){
         sort_by = "created_at"
     }
 
-    if(order === undefined){
+    if(order === undefined || order === ""){
         order = "desc"
     }
 
-    if(limit === undefined){
+    if(limit === undefined || limit === ""){
         limit = 10
     }
 
-    if(p === undefined /*|| p < 1 */){
+    if(p === undefined || p === ""/*|| p < 1 */){
         p = 1
     }
 
