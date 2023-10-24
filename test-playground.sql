@@ -79,5 +79,5 @@ LEFT JOIN comments
 ON articles.article_id = comments.article_id 
 GROUP BY articles.article_id
 ORDER BY article_id
-OFFSET 5 ROWS
-FETCH NEXT 5 ROWS ONLY
+OFFSET 0 ROWS
+FETCH NEXT 20 ROWS ONLY

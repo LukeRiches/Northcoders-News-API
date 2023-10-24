@@ -27,7 +27,6 @@ function getArticles(req, res, next){
             return fetchArticlesPagination(topic, sort_by, order, limit, p)
         })
         .then((articles)=>{
-            console.log(articles);
             res.status(200).send(articles)
         })
         .catch((err)=>{
@@ -35,13 +34,10 @@ function getArticles(req, res, next){
         });
     } else {
         fetchArticlesPagination(topic, sort_by, order, limit, p)
-        .then((articles)=>{
-            // console.log("Here");
-            console.log(articles);
-            res.status(200).send(articles)
+        .then((values)=>{
+            res.status(200).send(values)
         })
         .catch((err)=>{
-            console.log(err);
             next(err);
         });
     }

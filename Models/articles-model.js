@@ -69,7 +69,7 @@ function fetchArticlesLength(topic, sort_by, order){
     })
 }
 
-function fetchArticles(topic, sort_by, order, limit, p){
+function fetchArticles(topic, sort_by, order, limit, p,  queryLength){
 
     if(sort_by === undefined){
         sort_by = "created_at"
@@ -83,13 +83,31 @@ function fetchArticles(topic, sort_by, order, limit, p){
         limit = 10
     }
 
-    if(p === undefined){
+    if(p === undefined /*|| p < 1 */){
         p = 1
     }
 
     const offsetIndication = p - 1
 
     const offset = offsetIndication * limit;
+
+    const availablePages = Math.ceil(queryLength / limit);
+    
+    if( p > availablePages ){
+        return Promise.reject({ status: 400, msg: 'Page given is not within the available pages range' });
+    }
+
+    if(offset > queryLength){
+        return Promise.reject({ status: 400, msg: 'Offset exceeds the number of articles' });
+    }
+
+    if( p < 1 ){
+        return Promise.reject({ status: 400, msg: 'Page cannot be below 1' });
+    }
+
+    if( limit < 1 ){
+        return Promise.reject({ status: 400, msg: 'Limit cannot be below 1' });
+    }
 
     const queryValues = [];
 
@@ -124,14 +142,19 @@ function fetchArticles(topic, sort_by, order, limit, p){
         if(rows[0] === undefined && topic){
             return Promise.reject({status : 200, msg : "Topic does exist but there are no articles for it yet"})
         }
+        else if(rows[0] === undefined && p){
+            return Promise.reject({status : 404, msg : "No Articles found"})
+        }
         return rows;
     })
 }
 
 function fetchArticlesPagination(topic, sort_by, order, limit, p){
-    Promise.all([ fetchArticles(topic, sort_by, order, limit, p), fetchArticlesLength(topic, sort_by, order)])
+    return fetchArticlesLength(topic, sort_by, order)
+    .then((queryLength)=>{
+        return Promise.all([ fetchArticles(topic, sort_by, order, limit, p, queryLength), fetchArticlesLength(topic, sort_by, order)])
+    })
     .then((values)=>{
-        console.log(values);
         return {
             articles: values[0],
             total_count: values[1]
@@ -141,7 +164,6 @@ function fetchArticlesPagination(topic, sort_by, order, limit, p){
 
 
 function insertArticle ({author, title, body, topic, article_img_url}){
-    // console.log(author, title, body, topic, article_img_url);
 
     if(!title){
         return Promise.reject({ status: 400, msg: 'Title is required' });
