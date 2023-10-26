@@ -49,7 +49,7 @@ function fetchArticlesLength(topic, sort_by, order){
 
     query += `GROUP BY articles.article_id `;
 
-    if (!['article_id', 'title', 'topic', "author", "created_at", "article_img_url", "votes"].includes(sort_by)) {
+    if (![ 'title', 'topic', "author", "created_at", "votes", "comment_count"].includes(sort_by)) {
         return Promise.reject({ status: 400, msg: 'Invalid sort_by query' });
     } else {
         query += ` ORDER BY ${sort_by}`
